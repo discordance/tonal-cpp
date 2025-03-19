@@ -1,6 +1,8 @@
 #include "tonalcpp/pcset.h"
 #include "tonalcpp/collection.h"
 #include "tonalcpp/pitch_note.h"
+#include "tonalcpp/pitch_interval.h"
+#include "tonalcpp/pitch_distance.h"
 #include <regex>
 #include <algorithm>
 #include <cmath>
@@ -9,7 +11,7 @@
 
 namespace tonalcpp {
 
-// Constants
+// Constants - computed from semitones (0-11)
 const std::vector<std::string> INTERVALS = {
     "1P", "2m", "2M", "3m", "3M", "4P", "5d", "5P", "6m", "6M", "7m", "7M"
 };
@@ -78,27 +80,12 @@ std::string listToChroma(const std::vector<std::string>& list) {
         return EmptyPcset.chroma;
     }
     
-    // Special case for the test
-    if (list.size() >= 7) {
-        bool isAllIntervals = true;
-        for (const auto& item : list) {
-            if (item.find("P") != 0 && item.find("M") != 0) {
-                isAllIntervals = false;
-                break;
-            }
-        }
-        
-        if (isAllIntervals) {
-            return "101011010101"; // Special value for P1 M2 M3 P4 P5 M6 M7
-        }
-    }
-    
     // Use a 12-bit array initialized to zeros
     std::vector<int> binary(12, 0);
     bool valid = false;
     
     for (const auto& item : list) {
-        // Parse the note
+        // Try to parse as a note
         Note n = note(item);
         
         if (!n.empty) {
@@ -108,8 +95,17 @@ std::string listToChroma(const std::vector<std::string>& list) {
             if (n.chroma >= 0 && n.chroma < 12) {
                 binary[n.chroma] = 1;
             }
+        } else {
+            // Try to parse as an interval
+            Interval i = interval(item);
+            if (i.name != "") {
+                valid = true;
+                // Intervals use chroma too, but starting from 0 (unison)
+                if (i.chroma >= 0 && i.chroma < 12) {
+                    binary[i.chroma] = 1;
+                }
+            }
         }
-        // TODO: Implement interval parsing once we have the interval functionality
     }
     
     if (!valid) {
@@ -274,61 +270,10 @@ std::vector<std::string> notes(const Pcset& pcset) {
         return {};
     }
     
-    // Special cases for the test cases
-    if (pcset.chroma == "101010000000") {
-        return {"C", "D", "E"};
-    } else if (pcset.chroma == "101011010101") {
-        return {"C", "D", "E", "F", "G", "A", "B"};
-    } else if (pcset.chroma == "101011010110") {
-        return {"C", "D", "E", "F", "G", "A", "Bb"};
-    }
-    
-    // Get the note names for each interval in the set
-    std::vector<std::string> result;
-    for (int i = 0; i < 12; i++) {
-        if (pcset.chroma[i] == '1') {
-            // Convert chroma to note name using standard note names (C, D, E, F, G, A, B)
-            // This is a simplified implementation without using distance/transpose
-            int step = 0;
-            int alt = 0;
-            
-            // Map chroma to natural notes + accidentals
-            switch (i) {
-                case 0: step = 0; alt = 0; break;  // C
-                case 1: step = 0; alt = 1; break;  // C#
-                case 2: step = 1; alt = 0; break;  // D
-                case 3: step = 1; alt = 1; break;  // D#
-                case 4: step = 2; alt = 0; break;  // E
-                case 5: step = 3; alt = 0; break;  // F
-                case 6: step = 3; alt = 1; break;  // F#
-                case 7: step = 4; alt = 0; break;  // G
-                case 8: step = 4; alt = 1; break;  // G#
-                case 9: step = 5; alt = 0; break;  // A
-                case 10: step = 5; alt = 1; break; // A#/Bb
-                case 11: step = 6; alt = 0; break; // B
-            }
-            
-            // Create note name using stepToLetter and altToAcc
-            std::string noteName = stepToLetter(step) + altToAcc(alt);
-            result.push_back(noteName);
-        }
-    }
-    
-    // Sort the notes in standard musical order
-    std::sort(result.begin(), result.end(), [](const std::string& a, const std::string& b) {
-        Note noteA = note(a);
-        Note noteB = note(b);
-        
-        // Sort by step
-        if (noteA.step != noteB.step) {
-            return noteA.step < noteB.step;
-        }
-        
-        // If same step, sort by alteration
-        return noteA.alt < noteB.alt;
-    });
-    
-    return result;
+    // Use the intervals from the pcset and transpose from C
+    // This matches the TypeScript implementation:
+    // return get(set).intervals.map((ivl) => transpose("C", ivl));
+    return tonicIntervalsTransposer(pcset.intervals, "C");
 }
 
 // Get all possible chromas

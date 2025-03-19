@@ -29,6 +29,7 @@ set(LIB_SOURCES
     src/collection.cpp
     src/pitch_note.cpp
     src/pitch_interval.cpp
+    src/pitch_distance.cpp
     src/pcset.cpp
     src/chord_type.cpp
     src/chord_detect.cpp
@@ -41,7 +42,6 @@ add_library(tonalcpp STATIC ${LIB_SOURCES})
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/tonalcpp)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test)
-file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/examples)
 
 # Setup tests if enabled
 if(TONAL_BUILD_TESTS)
@@ -53,6 +53,7 @@ if(TONAL_BUILD_TESTS)
   set(TEST_SOURCES
     test/test_main.cpp
     test/test_helpers.cpp
+    test/test_pitch_interval.cpp
   )
   
   add_executable(test_tonalcpp ${TEST_SOURCES})
@@ -72,9 +73,3 @@ install(TARGETS tonalcpp
 
 install(DIRECTORY include/ DESTINATION include)
 
-# Example applications
-add_executable(chord_detector examples/chord_detector.cpp)
-target_link_libraries(chord_detector PRIVATE tonalcpp)
-
-add_executable(pitch_example examples/pitch_example.cpp)
-target_link_libraries(pitch_example PRIVATE tonalcpp)

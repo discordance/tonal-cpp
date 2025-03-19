@@ -69,6 +69,18 @@ TEST_CASE("Pitch Note") {
         CHECK(std::get<1>(tokens5) == "b");
         CHECK(std::get<2>(tokens5) == "");
         CHECK(std::get<3>(tokens5) == "");
+        
+        auto tokens6 = tokenizeNote("##");
+        CHECK(std::get<0>(tokens6) == "");
+        CHECK(std::get<1>(tokens6) == "##");
+        CHECK(std::get<2>(tokens6) == "");
+        CHECK(std::get<3>(tokens6) == "");
+        
+        auto tokens7 = tokenizeNote(" |\n");
+        CHECK(std::get<0>(tokens7) == "");
+        CHECK(std::get<1>(tokens7) == "");
+        CHECK(std::get<2>(tokens7) == "");
+        CHECK(std::get<3>(tokens7) == "");
     }
     
     SUBCASE("note properties from string") {
@@ -143,6 +155,14 @@ TEST_CASE("Pitch Note") {
         };
         for (size_t i = 0; i < expected4.size(); ++i) {
             CHECK(midis4[i] == expected4[i]);
+        }
+        
+        auto midis5 = getMidis(split("C D E F"));
+        std::vector<std::optional<int>> expected5 = {
+            std::nullopt, std::nullopt, std::nullopt, std::nullopt
+        };
+        for (size_t i = 0; i < expected5.size(); ++i) {
+            CHECK(midis5[i] == expected5[i]);
         }
     }
     

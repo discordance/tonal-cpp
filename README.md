@@ -8,7 +8,6 @@ This is a C++ port of the [tonal.js](https://github.com/tonaljs/tonal) music the
 Cpp/
 ├── CMakeLists.txt         # Main build configuration
 ├── doctest/               # Doctest testing framework 
-├── examples/              # Example applications
 ├── include/               # Header files 
 │   └── tonalcpp/          # Library headers
 ├── src/                   # Source files
@@ -22,36 +21,13 @@ Cpp/
 
 ## Building
 
-### Quick Start
+### Quick Start (testing)
 
 ```bash
-mkdir -p build
-cd build
-cmake ..
-cmake --build .
-./test_tonalcpp
-```
-
-### Build Options
-
-- `TONAL_BUILD_TESTS` - Build test programs (default: ON)
-
-Example:
-```bash
-cmake -DTONAL_BUILD_TESTS=OFF ..
-```
-
-## Running Tests
-
-```bash
-# Run all tests
-./test_tonalcpp
-
-# Get test help
-./test_tonalcpp --help
-
-# Run specific test
-./test_tonalcpp --test-case="Test name"
+rm -rf build
+cmake -S . -B build
+cmake --build build
+./build/test_tonalcpp
 ```
 
 ## Implementation Details

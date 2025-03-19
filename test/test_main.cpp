@@ -15,3 +15,4 @@ TEST_CASE("Test framework") {
 #include "test_pitch_note.cpp"
 #include "test_pcset.cpp"
 #include "test_collection.cpp"
+#include "test_pitch_interval.cpp"
