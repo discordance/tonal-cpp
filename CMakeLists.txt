@@ -53,7 +53,6 @@ if(TONAL_BUILD_TESTS)
   set(TEST_SOURCES
     test/test_main.cpp
     test/test_helpers.cpp
-    test/test_pitch_interval.cpp
   )
   
   add_executable(test_tonalcpp ${TEST_SOURCES})

@@ -1,6 +1,7 @@
 #include "../doctest/doctest.h"
 #include "tonalcpp/pitch.h"
 #include <vector>
+#include <limits>
 
 using namespace tonalcpp;
 
@@ -111,10 +112,11 @@ TEST_CASE("@tonaljs/pitch") {
         
         // Intervals
         CHECK(coordinates(P5) == PitchCoordinates{1, 0});
-        CHECK(coordinates(P_5) == PitchCoordinates{-1, 0});
+        CHECK(coordinates(P_5) == PitchCoordinates{-1, -0});
     }
     
     SUBCASE("pitch") {
+        // Test using the function name in the TS test (pitch) which should map to pitchFromCoordinates
         Pitch fromCoord = pitchFromCoordinates({0});
         CHECK(fromCoord.step == C.step);
         CHECK(fromCoord.alt == C.alt);
@@ -126,28 +128,44 @@ TEST_CASE("@tonaljs/pitch") {
         CHECK(fromCoord.alt == Cs.alt);
         CHECK_FALSE(fromCoord.oct.has_value());
         CHECK_FALSE(fromCoord.dir.has_value());
+        
+        // Explicit tests matching TS version
+        Pitch p1 = pitchFromCoordinates({0});
+        CHECK(p1.step == C.step);
+        CHECK(p1.alt == C.alt);
+        
+        Pitch p2 = pitchFromCoordinates({7});
+        CHECK(p2.step == Cs.step);
+        CHECK(p2.alt == Cs.alt);
     }
     
     SUBCASE("isPitch") {
-        Pitch validPitch = {0, 0, std::nullopt, std::nullopt};
-        CHECK(isPitch(&validPitch) == true);
+        // Valid pitch with various common values
+        Pitch validPitch1 = {0, 0, std::nullopt, std::nullopt};
+        CHECK(isPitch(&validPitch1) == true);
         
-        // In the JavaScript test, these test cases check NaN values,
-        // which don't translate well to C++
-        // We've commented them out since they don't apply
-        //CHECK(isPitch({ step: 0, alt: NaN })) == false);
-        //CHECK(isPitch({ step: NaN, alt: 0 })) == false);
+        Pitch validPitch2 = {2, -1, std::nullopt, std::nullopt};
+        CHECK(isPitch(&validPitch2) == true); 
         
-        // This can be directly tested
+        Pitch validPitch3 = {4, 1, 4, std::nullopt};
+        CHECK(isPitch(&validPitch3) == true);
+        
+        Pitch validPitch4 = {4, 0, 0, Direction::Ascending};
+        CHECK(isPitch(&validPitch4) == true);
+        
+        // Invalid step value
+        Pitch invalidStepPitch = {std::numeric_limits<int>::min(), 0, std::nullopt, std::nullopt};
+        CHECK(isPitch(&invalidStepPitch) == false);
+        
+        // Invalid alt value
+        Pitch invalidAltPitch = {0, std::numeric_limits<int>::min(), std::nullopt, std::nullopt};
+        CHECK(isPitch(&invalidAltPitch) == false);
+        
+        // Both step and alt invalid
+        Pitch bothInvalidPitch = {-1, -100, std::nullopt, std::nullopt};
+        CHECK(isPitch(&bothInvalidPitch) == false);
+        
+        // Null pointer test
         CHECK(isPitch(nullptr) == false);
-        
-        // For the string test, our implementation assumes anything 
-        // non-null is a valid pitch due to the limits of void* type checking.
-        // In a real implementation, you'd use RTTI and proper type checking.
-        
-        // We'll comment this out as it's not possible to safely/meaningfully
-        // check arbitrary types with our void* implementation
-        //std::string notAPitch = "";
-        //CHECK(isPitch(&notAPitch) == false);
     }
 }

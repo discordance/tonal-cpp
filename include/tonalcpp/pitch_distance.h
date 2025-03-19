@@ -18,6 +18,14 @@ namespace tonalcpp {
 std::string transpose(const std::string& noteName, const std::string& intervalName);
 
 /**
+ * Transpose a note by an interval using coordinates
+ * @param noteName The note name to transpose
+ * @param coords The interval coordinates [fifths, octaves]
+ * @return The resulting note name
+ */
+std::string transpose(const std::string& noteName, const std::vector<int>& coords);
+
+/**
  * Transpose a note by an interval (object version)
  * @param n The note to transpose
  * @param i The interval to transpose by
@@ -43,9 +51,12 @@ std::string distance(const Note& fromNote, const Note& toNote);
 
 /**
  * Create a transposer function based on a tonic and a set of intervals
+ * In TypeScript, this returns a function that takes a normalized index.
+ * In C++, we pre-compute all possible notes for 0 to intervals.size()-1.
+ * 
  * @param intervals The intervals to use for transposition
  * @param tonic The tonic note (reference point)
- * @return A vector of transposed notes
+ * @return A vector of transposed notes from the tonic based on intervals
  */
 std::vector<std::string> tonicIntervalsTransposer(
     const std::vector<std::string>& intervals, 

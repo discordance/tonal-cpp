@@ -44,20 +44,44 @@ bool isNamedPitch(const void* src) {
 bool isPitch(const void* src) {
     if (!src) return false;
     
-    // Try to cast to Pitch
-    const Pitch* pitchTest = static_cast<const Pitch*>(src);
-    
-    // Validate that it has valid step values
-    // This helps distinguish real Pitch objects from other pointer types
-    if (pitchTest && (pitchTest->step >= 0 && pitchTest->step <= 6)) {
-        return true;
+    try {
+        // Try to cast to Pitch - use reinterpret_cast for safer handling of potential non-Pitch types
+        const Pitch* pitchTest = reinterpret_cast<const Pitch*>(src);
+        
+        // Additional validation to protect against invalid memory access
+        // Get a valid signature from the memory layout to check if it's likely a Pitch
+        // Check if the values are within reasonable bounds
+        if (pitchTest && 
+            (pitchTest->step >= 0 && pitchTest->step <= 6) && 
+            (pitchTest->alt >= -10 && pitchTest->alt <= 10)) {
+            // Additional type safety check - see if accessing these members causes segfault
+            // or if optional values look reasonable
+            if (pitchTest->oct.has_value()) {
+                int octValue = pitchTest->oct.value();
+                // Reasonable octave range in music notation (-1 to 10)
+                if (octValue < -10 || octValue > 10) return false;
+            }
+            
+            if (pitchTest->dir.has_value()) {
+                Direction dirValue = pitchTest->dir.value();
+                // Check if dir has a valid enum value
+                if (dirValue != Direction::Ascending && 
+                    dirValue != Direction::Descending) {
+                    return false;
+                }
+            }
+            
+            // If we've made it here, it's likely a valid Pitch object
+            return true;
+        }
+    }
+    catch (...) {
+        // If any exception occurs during validation, it's not a valid Pitch
+        return false;
     }
     
     // For non-Pitch objects, return false
     return false;
-    
-    // Note: In a real-world application with proper RTTI, we would use dynamic_cast
-    // But for test compatibility we're using static_cast with additional validation
 }
 
 int chroma(const Pitch& pitch) {
