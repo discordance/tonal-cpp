@@ -171,3 +171,5 @@ std::vector<std::string> detect(
     
     return result;
 }
+
+} // namespace tonalcpp

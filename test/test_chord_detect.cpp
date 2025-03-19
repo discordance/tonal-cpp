@@ -1,4 +1,4 @@
-#include "doctest/doctest.h"
+#include "doctest.h"
 #include "tonalcpp/chord_detect.h"
 
 using namespace tonalcpp;
@@ -71,9 +71,9 @@ TEST_CASE("chord_detect - detect") {
 TEST_CASE("chord_detect - internal functions") {
     SUBCASE("namedSet") {
         auto noteNameFunc = namedSet({"C4", "E4", "G4"});
-        CHECK(noteNameFunc(0) == "C");
-        CHECK(noteNameFunc(4) == "E");
-        CHECK(noteNameFunc(7) == "G");
+        CHECK(noteNameFunc(0) == "C4");
+        CHECK(noteNameFunc(4) == "E4");
+        CHECK(noteNameFunc(7) == "G4");
         CHECK(noteNameFunc(2) == "");  // Not in the set
     }
     
