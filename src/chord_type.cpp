@@ -4,6 +4,7 @@
 #include <sstream>
 
 namespace tonalcpp {
+namespace chord_type {
 
 // Dictionary to store chord types
 static std::vector<ChordType> dictionary;
@@ -208,7 +209,7 @@ void add(const std::vector<std::string>& intervals,
     ChordQuality quality = getQuality(intervals);
     
     // Create a Pcset first
-    Pcset pcsetData = getPcset(intervals);
+    pcset::Pcset pcsetData = pcset::getPcset(intervals);
     
     // Create the ChordType that extends Pcset
     ChordType chord;
@@ -249,7 +250,7 @@ ChordType getChordType(const std::string& type) {
     }
     
     // Try to interpret as a chroma
-    if (isChroma(type)) {
+    if (pcset::isChroma(type)) {
         auto it2 = index.find(type);
         if (it2 != index.end()) {
             return it2->second;
@@ -346,4 +347,5 @@ namespace {
     static InitializerHelper initializer;
 }
 
+} // namespace chord_type
 } // namespace tonalcpp

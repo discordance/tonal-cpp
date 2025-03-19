@@ -4,8 +4,10 @@
 #include <map>
 #include <string>
 #include <algorithm>
+#include <limits>
 
 namespace tonalcpp {
+namespace pitch_note {
 
 // Constants
 const std::array<int, 7> SEMI = {0, 2, 4, 5, 7, 9, 11};
@@ -116,11 +118,11 @@ Note parse(const std::string& noteName) {
     std::optional<int> oct = octStr.empty() ? std::nullopt : std::optional<int>(std::stoi(octStr));
     
     // Generate coordinates
-    Pitch p;
+    pitch::Pitch p;
     p.step = step;
     p.alt = alt;
     p.oct = oct;
-    PitchCoordinates coord = coordinates(p);
+    pitch::PitchCoordinates coord = pitch::coordinates(p);
     
     // Create note name and pitch class
     std::string name = letter + acc + octStr;
@@ -162,7 +164,7 @@ Note parse(const std::string& noteName) {
     return result;
 }
 
-std::string pitchName(const Pitch& pitch) {
+std::string pitchName(const pitch::Pitch& pitch) {
     const int step = pitch.step;
     const int alt = pitch.alt;
     
@@ -180,8 +182,8 @@ std::string pitchName(const Pitch& pitch) {
     }
 }
 
-Note coordToNote(const PitchCoordinates& coord) {
-    return note(pitchFromCoordinates(coord));
+Note coordToNote(const pitch::PitchCoordinates& coord) {
+    return note(pitch::pitchFromCoordinates(coord));
 }
 
 // Main note function implementations
@@ -196,12 +198,13 @@ Note note(const std::string& src) {
     return result;
 }
 
-Note note(const Pitch& src) {
+Note note(const pitch::Pitch& src) {
     return note(pitchName(src));
 }
 
-Note note(const NamedPitch& src) {
+Note note(const pitch::NamedPitch& src) {
     return note(src.name);
 }
 
+} // namespace pitch_note
 } // namespace tonalcpp

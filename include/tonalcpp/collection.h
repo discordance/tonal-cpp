@@ -7,6 +7,7 @@
 #include <random>
 
 namespace tonalcpp {
+namespace collection {
 
 /**
  * Creates a numeric range
@@ -116,4 +117,5 @@ std::vector<std::vector<T>> permutations(const std::vector<T>& vec) {
     return result;
 }
 
+} // namespace collection
 } // namespace tonalcpp

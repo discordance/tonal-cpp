@@ -2,6 +2,7 @@
 #include "tonalcpp/chord_detect.h"
 
 using namespace tonalcpp;
+using namespace tonalcpp::chord_detect;
 
 TEST_CASE("chord_detect - detect") {
     SUBCASE("basic detection") {

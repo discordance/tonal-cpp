@@ -3,6 +3,7 @@
 #include <algorithm>
 
 namespace tonalcpp {
+namespace pitch {
 
 // Constants
 // The number of semitones from C for each natural note (C, D, E, F, G, A, B)
@@ -171,4 +172,5 @@ Pitch pitchFromCoordinates(const PitchCoordinates& coord) {
     return Pitch(step, alt, oct, dir, "");
 }
 
+} // namespace pitch
 } // namespace tonalcpp

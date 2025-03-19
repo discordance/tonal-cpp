@@ -7,6 +7,7 @@
 #include "tonalcpp/pitch.h"
 
 namespace tonalcpp {
+namespace pitch_interval {
 
 /**
  * Interval type representation
@@ -26,17 +27,17 @@ using Quality = std::string;
 /**
  * Interval struct which extends Pitch with interval-specific properties
  */
-struct Interval : public Pitch {
-    bool empty;                // Whether this is a valid interval
-    IntervalName name;         // The interval name
-    int num;                   // The interval number (1, 2, 3, etc.)
-    Quality q;                 // The interval quality string (P, M, m, d, A, etc.)
-    IntervalType type;         // The interval type (perfectable or majorable)
-    int simple;                // Simplified interval number
-    int semitones;             // The number of semitones
-    int chroma;                // The chromatic number (0-11)
-    int oct;                   // Octave component
-    IntervalCoordinates coord; // The interval coordinates
+struct Interval : public pitch::Pitch {
+    bool empty;                          // Whether this is a valid interval
+    IntervalName name;                   // The interval name
+    int num;                             // The interval number (1, 2, 3, etc.)
+    Quality q;                           // The interval quality string (P, M, m, d, A, etc.)
+    IntervalType type;                   // The interval type (perfectable or majorable)
+    int simple;                          // Simplified interval number
+    int semitones;                       // The number of semitones
+    int chroma;                          // The chromatic number (0-11)
+    int oct;                             // Octave component
+    pitch::IntervalCoordinates coord;    // The interval coordinates
 
     // Default constructor that creates an empty interval
     Interval();
@@ -44,7 +45,7 @@ struct Interval : public Pitch {
     // Full constructor
     Interval(bool emp, const IntervalName& n, int nu, const Quality& qu, IntervalType ty, 
              int s, int a, int d, int sim, int semi, int ch, int o, 
-             const IntervalCoordinates& co);
+             const pitch::IntervalCoordinates& co);
 };
 
 /**
@@ -96,13 +97,14 @@ int qToAlt(IntervalType type, const Quality& quality);
  * @param forceDescending Force interval to be descending
  * @return Interval object
  */
-Interval coordToInterval(const PitchCoordinates& coord, bool forceDescending = false);
+Interval coordToInterval(const pitch::PitchCoordinates& coord, bool forceDescending = false);
 
 /**
  * Generate interval name from pitch properties
  * @param props Pitch properties
  * @return Interval name
  */
-std::string intervalPitchName(const Pitch& props);
+std::string intervalPitchName(const pitch::Pitch& props);
 
+} // namespace pitch_interval
 } // namespace tonalcpp

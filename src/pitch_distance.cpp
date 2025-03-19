@@ -4,14 +4,15 @@
 #include <unordered_map>
 
 namespace tonalcpp {
+namespace pitch_distance {
 
 /**
  * Helper function to convert interval coordinates to an Interval object
  * Matches the TypeScript coordToInterval function
  */
-Interval coordToIntervalObj(const PitchCoordinates& coord, bool forceDescending = false) {
+pitch_interval::Interval coordToIntervalObj(const pitch::PitchCoordinates& coord, bool forceDescending = false) {
     if (coord.empty()) {
-        return NoInterval;
+        return pitch_interval::NoInterval;
     }
     
     int fifths = coord[0];
@@ -21,7 +22,7 @@ Interval coordToIntervalObj(const PitchCoordinates& coord, bool forceDescending 
     bool isDescending = (fifths * 7 + octaves * 12) < 0;
     
     // Create the interval coordinates
-    IntervalCoordinates intervalCoord;
+    pitch::IntervalCoordinates intervalCoord;
     if (forceDescending || isDescending) {
         intervalCoord = {-fifths, -octaves, -1};
     } else {
@@ -31,7 +32,7 @@ Interval coordToIntervalObj(const PitchCoordinates& coord, bool forceDescending 
     // Convert to an interval
     // Convert array to vector for coordToInterval
     std::vector<int> coords = {intervalCoord[0], intervalCoord[1], intervalCoord[2]};
-    return coordToInterval(coords, forceDescending);
+    return pitch_interval::coordToInterval(coords, forceDescending);
 }
 
 /**
@@ -40,8 +41,8 @@ Interval coordToIntervalObj(const PitchCoordinates& coord, bool forceDescending 
  */
 std::string transpose(const std::string& noteName, const std::string& intervalName) {
     // Parse note and interval
-    Note n = note(noteName);
-    Interval i = interval(intervalName);
+    pitch_note::Note n = pitch_note::note(noteName);
+    pitch_interval::Interval i = pitch_interval::interval(intervalName);
     
     // Check for invalid inputs
     if (n.empty || i.name == "") {
@@ -49,11 +50,11 @@ std::string transpose(const std::string& noteName, const std::string& intervalNa
     }
     
     // Get note and interval coordinates
-    PitchCoordinates noteCoord = n.coord;
-    IntervalCoordinates intervalCoord = i.coord;
+    pitch::PitchCoordinates noteCoord = n.coord;
+    pitch::IntervalCoordinates intervalCoord = i.coord;
     
     // Create the transposed coordinates
-    PitchCoordinates result;
+    pitch::PitchCoordinates result;
     if (noteCoord.size() == 1) {
         // For pitch classes (no octave)
         result = {noteCoord[0] + intervalCoord[0]};
@@ -66,7 +67,7 @@ std::string transpose(const std::string& noteName, const std::string& intervalNa
     }
     
     // Convert back to a note and return its name
-    return coordToNote(result).name;
+    return pitch_note::coordToNote(result).name;
 }
 
 /**
@@ -75,8 +76,8 @@ std::string transpose(const std::string& noteName, const std::string& intervalNa
  */
 std::string distance(const std::string& fromNoteName, const std::string& toNoteName) {
     // Parse notes
-    Note fromNote = note(fromNoteName);
-    Note toNote = note(toNoteName);
+    pitch_note::Note fromNote = pitch_note::note(fromNoteName);
+    pitch_note::Note toNote = pitch_note::note(toNoteName);
     
     // Check for invalid inputs
     if (fromNote.empty || toNote.empty) {
@@ -84,8 +85,8 @@ std::string distance(const std::string& fromNoteName, const std::string& toNoteN
     }
     
     // Get note coordinates
-    PitchCoordinates fromCoord = fromNote.coord;
-    PitchCoordinates toCoord = toNote.coord;
+    pitch::PitchCoordinates fromCoord = fromNote.coord;
+    pitch::PitchCoordinates toCoord = toNote.coord;
     
     // Calculate difference in fifths
     int fifths = toCoord[0] - fromCoord[0];
@@ -124,7 +125,7 @@ std::string distance(const std::string& fromNoteName, const std::string& toNoteN
 /**
  * Calculate the interval between two notes (object version)
  */
-std::string distance(const Note& fromNote, const Note& toNote) {
+std::string distance(const pitch_note::Note& fromNote, const pitch_note::Note& toNote) {
     return distance(fromNote.name, toNote.name);
 }
 
@@ -138,10 +139,10 @@ std::string distance(const Note& fromNote, const Note& toNote) {
  */
 std::string transpose(const std::string& noteName, const std::vector<int>& coords) {
     // Parse note
-    Note n = note(noteName);
+    pitch_note::Note n = pitch_note::note(noteName);
     
     // Convert input coordinates to a proper interval coordinate
-    PitchCoordinates intervalCoord;
+    pitch::PitchCoordinates intervalCoord;
     
     if (coords.size() >= 2) {
         // We have both fifths and octaves
@@ -160,10 +161,10 @@ std::string transpose(const std::string& noteName, const std::vector<int>& coord
     }
     
     // Get note coordinates
-    PitchCoordinates noteCoord = n.coord;
+    pitch::PitchCoordinates noteCoord = n.coord;
     
     // Create the transposed coordinates
-    PitchCoordinates result;
+    pitch::PitchCoordinates result;
     if (noteCoord.size() == 1) {
         // For pitch classes (no octave)
         result = {noteCoord[0] + intervalCoord[0]};
@@ -176,13 +177,13 @@ std::string transpose(const std::string& noteName, const std::vector<int>& coord
     }
     
     // Convert back to a note and return its name
-    return coordToNote(result).name;
+    return pitch_note::coordToNote(result).name;
 }
 
 /**
  * Transpose a note by an interval (object version)
  */
-std::string transpose(const Note& n, const Interval& i) {
+std::string transpose(const pitch_note::Note& n, const pitch_interval::Interval& i) {
     return transpose(n.name, i.name);
 }
 
@@ -227,4 +228,5 @@ std::vector<std::string> tonicIntervalsTransposer(
     return result;
 }
 
+} // namespace pitch_distance
 } // namespace tonalcpp

@@ -7,6 +7,7 @@
 #include <set>
 
 using namespace tonalcpp;
+using namespace tonalcpp::chord_type;
 
 TEST_CASE("chord_type - test names") {
     auto namesList = names();
@@ -104,7 +105,7 @@ TEST_CASE("chord_type - clear dictionary") {
 TEST_CASE("chord_type - split function matches JavaScript behavior") {
     // Test with standard chord alias string containing multiple spaces
     std::string test1 = "M ^  maj";
-    auto tokens1 = tonalcpp::split(test1);
+    auto tokens1 = split(test1);
     
     // Should have 4 tokens including empty string
     REQUIRE(tokens1.size() == 4);
@@ -115,7 +116,7 @@ TEST_CASE("chord_type - split function matches JavaScript behavior") {
     
     // Test with leading and trailing spaces
     std::string test2 = " x y ";
-    auto tokens2 = tonalcpp::split(test2);
+    auto tokens2 = split(test2);
     
     // Should have 4 tokens including empty strings at start and end
     REQUIRE(tokens2.size() == 4);
@@ -159,7 +160,7 @@ TEST_CASE("chord_type - data validation") {
             
             // Convert intervals to semitones
             for (const auto& intervalName : chord.intervals) {
-                Interval interval = tonalcpp::interval(intervalName);
+                pitch_interval::Interval interval = tonalcpp::pitch_interval::interval(intervalName);
                 int semitone = interval.semitones;
                 semitones.push_back(semitone);
             }

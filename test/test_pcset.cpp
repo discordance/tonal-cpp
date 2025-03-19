@@ -4,6 +4,7 @@
 #include <vector>
 
 using namespace tonalcpp;
+using namespace tonalcpp::pcset;
 using namespace tonalcpp::test;
 
 TEST_CASE("Pcset basic functionality") {

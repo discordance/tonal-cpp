@@ -5,6 +5,8 @@
 #include <string>
 
 using namespace tonalcpp;
+using namespace tonalcpp::pitch;
+using namespace tonalcpp::pitch_note;
 using namespace tonalcpp::test;
 
 // Helper for extracting note properties from a vector of strings

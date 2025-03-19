@@ -10,6 +10,7 @@
 #include <bitset>
 
 namespace tonalcpp {
+namespace pcset {
 
 // Constants - computed from semitones (0-11)
 const std::vector<std::string> INTERVALS = {
@@ -67,7 +68,7 @@ std::vector<std::string> chromaRotations(const std::string& chroma) {
     std::vector<char> binary(chroma.begin(), chroma.end());
     
     for (int i = 0; i < 12; i++) {
-        std::vector<char> rotated = rotate(i, binary);
+        std::vector<char> rotated = collection::rotate(i, binary);
         rotations.push_back(std::string(rotated.begin(), rotated.end()));
     }
     
@@ -86,7 +87,7 @@ std::string listToChroma(const std::vector<std::string>& list) {
     
     for (const auto& item : list) {
         // Try to parse as a note
-        Note n = note(item);
+        pitch_note::Note n = pitch_note::note(item);
         
         if (!n.empty) {
             valid = true;
@@ -97,7 +98,7 @@ std::string listToChroma(const std::vector<std::string>& list) {
             }
         } else {
             // Try to parse as an interval
-            Interval i = interval(item);
+            pitch_interval::Interval i = pitch_interval::interval(item);
             if (i.name != "") {
                 valid = true;
                 // Intervals use chroma too, but starting from 0 (unison)
@@ -273,7 +274,7 @@ std::vector<std::string> notes(const Pcset& pcset) {
     // Use the intervals from the pcset and transpose from C
     // This matches the TypeScript implementation:
     // return get(set).intervals.map((ivl) => transpose("C", ivl));
-    return tonicIntervalsTransposer(pcset.intervals, "C");
+    return pitch_distance::tonicIntervalsTransposer(pcset.intervals, "C");
 }
 
 // Get all possible chromas
@@ -293,7 +294,7 @@ std::vector<std::string> modes(const std::string& src, bool normalize) {
     std::vector<std::string> result;
     
     for (int i = 0; i < 12; i++) {
-        std::vector<char> rotated = rotate(i, binary);
+        std::vector<char> rotated = collection::rotate(i, binary);
         std::string rotatedStr(rotated.begin(), rotated.end());
         
         if (!normalize || rotatedStr[0] == '1') {
@@ -382,7 +383,7 @@ bool isSupersetOf(const Pcset& subset, const Pcset& superset) {
 // IsNoteIncludedIn implementation
 bool isNoteIncludedIn(const std::string& set, const std::string& noteName) {
     Pcset pcset = getPcset(set);
-    Note n = note(noteName);
+    pitch_note::Note n = pitch_note::note(noteName);
     
     if (n.empty || pcset.empty) {
         return false;
@@ -401,7 +402,7 @@ bool isNoteIncludedIn(const std::vector<std::string>& set, const std::string& no
 }
 
 bool isNoteIncludedIn(const Pcset& set, const std::string& noteName) {
-    Note n = note(noteName);
+    pitch_note::Note n = pitch_note::note(noteName);
     
     if (n.empty || set.empty) {
         return false;
@@ -439,4 +440,5 @@ std::vector<std::string> filter(const Pcset& set, const std::vector<std::string>
     return filtered;
 }
 
+} // namespace pcset
 } // namespace tonalcpp

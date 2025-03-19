@@ -3,6 +3,7 @@ build/
 out/
 bin/
 lib/
+cmake-build-debug/
 
 # CMake generated files
 CMakeCache.txt

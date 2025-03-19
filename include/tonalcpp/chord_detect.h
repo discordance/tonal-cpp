@@ -9,6 +9,7 @@
 #include "tonalcpp/pcset.h"
 
 namespace tonalcpp {
+namespace chord_detect {
 
 /**
  * Represents a detected chord with a weight to determine ranking
@@ -65,7 +66,7 @@ std::vector<FoundChord> findMatches(
  * @param chordType The chord type to test
  * @return true if the chord type has these characteristics
  */
-bool hasAnyThirdAndPerfectFifthAndAnySeventh(const ChordType& chordType);
+bool hasAnyThirdAndPerfectFifthAndAnySeventh(const chord_type::ChordType& chordType);
 
 /**
  * Adds perfect fifth to a chroma if it doesn't have any fifth
@@ -75,4 +76,5 @@ bool hasAnyThirdAndPerfectFifthAndAnySeventh(const ChordType& chordType);
  */
 std::string withPerfectFifth(const std::string& chroma);
 
+} // namespace chord_detect
 } // namespace tonalcpp

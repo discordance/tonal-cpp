@@ -4,6 +4,7 @@
 #include <limits>
 
 using namespace tonalcpp;
+using namespace tonalcpp::pitch;
 
 // Pitch classes
 const Pitch C = {0, 0, std::nullopt, std::nullopt};

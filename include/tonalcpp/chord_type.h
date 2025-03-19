@@ -6,6 +6,7 @@
 #include "tonalcpp/pcset.h"
 
 namespace tonalcpp {
+namespace chord_type {
 
 /**
  * Possible chord qualities
@@ -21,7 +22,7 @@ enum class ChordQuality {
 /**
  * ChordType data structure that extends Pcset
  */
-struct ChordType : public Pcset {
+struct ChordType : public pcset::Pcset {
     std::string name;                  // Full chord name
     ChordQuality quality;              // Chord quality
     std::vector<std::string> aliases;  // Alternative names/symbols
@@ -116,4 +117,5 @@ void initChordTypes();
  */
 std::vector<std::string> split(const std::string& str);
 
+} // namespace chord_type
 } // namespace tonalcpp

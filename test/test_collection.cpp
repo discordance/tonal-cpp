@@ -8,6 +8,7 @@
 #include <functional>
 
 using namespace tonalcpp;
+using namespace tonalcpp::collection;
 using namespace tonalcpp::test;
 
 TEST_CASE("Collection range") {

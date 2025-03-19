@@ -5,6 +5,7 @@
 #include <unordered_map>
 
 namespace tonalcpp {
+namespace chord_detect {
 
 // Bitmask constants for bit operations on chroma numbers
 namespace BITMASK {
@@ -37,7 +38,7 @@ std::function<std::string(int)> namedSet(const std::vector<std::string>& notes) 
     std::unordered_map<int, std::string> pcToName;
     
     for (const auto& n : notes) {
-        Note noteObj = note(n);
+        pitch_note::Note noteObj = pitch_note::note(n);
         if (noteObj.chroma >= 0) {
             // Only set if not already set (first occurrence has priority)
             if (pcToName.find(noteObj.chroma) == pcToName.end()) {
@@ -56,7 +57,7 @@ std::function<std::string(int)> namedSet(const std::vector<std::string>& notes) 
 }
 
 // Tests if a chord type has any third, perfect fifth, and any seventh
-bool hasAnyThirdAndPerfectFifthAndAnySeventh(const ChordType& chordType) {
+bool hasAnyThirdAndPerfectFifthAndAnySeventh(const chord_type::ChordType& chordType) {
     int chromaNumber = std::stoi(chordType.chroma, nullptr, 2);
     return hasAnyThird(chromaNumber) && 
            hasPerfectFifth(chromaNumber) && 
@@ -84,11 +85,11 @@ std::vector<FoundChord> findMatches(
     }
     
     std::string tonic = notes[0];
-    int tonicChroma = note(tonic).chroma;
+    int tonicChroma = pitch_note::note(tonic).chroma;
     auto noteName = namedSet(notes);
     
     // Get all modes (rotations of the pitch class set)
-    auto allModes = modes(notes, false);
+    auto allModes = pcset::modes(notes, false);
     
     std::vector<FoundChord> found;
     for (size_t index = 0; index < allModes.size(); ++index) {
@@ -100,7 +101,7 @@ std::vector<FoundChord> findMatches(
         }
         
         // Find all chord types that match this mode
-        auto allChordTypes = all();
+        auto allChordTypes = chord_type::all();
         for (const auto& chordType : allChordTypes) {
             bool matches = false;
             
@@ -142,7 +143,7 @@ std::vector<std::string> detect(
     // Filter to valid note names with pitch classes
     std::vector<std::string> notes;
     for (const auto& n : source) {
-        std::string pc = note(n).pc;
+        std::string pc = pitch_note::note(n).pc;
         if (!pc.empty()) {
             notes.push_back(pc);
         }
@@ -172,4 +173,5 @@ std::vector<std::string> detect(
     return result;
 }
 
+} // namespace chord_detect
 } // namespace tonalcpp

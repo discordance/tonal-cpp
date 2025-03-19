@@ -7,6 +7,7 @@
 #include <cstdint>
 
 namespace tonalcpp {
+namespace pitch {
 
 /**
  * Direction of an interval (ascending or descending)
@@ -113,4 +114,5 @@ PitchCoordinates coordinates(const Pitch& pitch);
  */
 Pitch pitchFromCoordinates(const PitchCoordinates& coord);
 
+} // namespace pitch
 } // namespace tonalcpp

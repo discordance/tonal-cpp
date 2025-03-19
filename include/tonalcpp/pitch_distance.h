@@ -8,6 +8,7 @@
 #include "tonalcpp/pitch_interval.h"
 
 namespace tonalcpp {
+namespace pitch_distance {
 
 /**
  * Transpose a note by an interval
@@ -31,7 +32,7 @@ std::string transpose(const std::string& noteName, const std::vector<int>& coord
  * @param i The interval to transpose by
  * @return The resulting note name
  */
-std::string transpose(const Note& n, const Interval& i);
+std::string transpose(const pitch_note::Note& n, const pitch_interval::Interval& i);
 
 /**
  * Calculate the interval between two notes
@@ -47,7 +48,7 @@ std::string distance(const std::string& fromNote, const std::string& toNote);
  * @param toNote The destination note 
  * @return The interval name
  */
-std::string distance(const Note& fromNote, const Note& toNote);
+std::string distance(const pitch_note::Note& fromNote, const pitch_note::Note& toNote);
 
 /**
  * Create a transposer function based on a tonic and a set of intervals
@@ -61,5 +62,12 @@ std::string distance(const Note& fromNote, const Note& toNote);
 std::vector<std::string> tonicIntervalsTransposer(
     const std::vector<std::string>& intervals, 
     const std::string& tonic);
+
+} // namespace pitch_distance
+
+// Also provide functions at the root namespace level for backward compatibility
+using pitch_distance::transpose;
+using pitch_distance::distance;
+using pitch_distance::tonicIntervalsTransposer;
 
 } // namespace tonalcpp

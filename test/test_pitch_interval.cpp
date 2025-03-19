@@ -5,6 +5,8 @@
 #include <string>
 
 using namespace tonalcpp;
+using namespace tonalcpp::pitch_interval;
+using namespace tonalcpp::pitch;
 
 TEST_CASE("@tonaljs/pitch-interval") {
     SUBCASE("tokenize") {

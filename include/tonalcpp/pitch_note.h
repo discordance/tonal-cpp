@@ -7,6 +7,7 @@
 #include <vector>
 
 namespace tonalcpp {
+namespace pitch_note {
 
 // Type definitions similar to TypeScript
 using NoteWithOctave = std::string;
@@ -16,18 +17,18 @@ using NoteName = std::string;
 /**
  * A full Note representation
  */
-struct Note : public Pitch {
+struct Note : public pitch::Pitch {
     bool empty = false;
     std::string letter;
     std::string acc;
     std::string pc;
     int chroma;
     int height;
-    PitchCoordinates coord;
+    pitch::PitchCoordinates coord;
     std::optional<int> midi;
     std::optional<double> freq;
 
-    Note() : Pitch(), empty(true), letter(""), acc(""), pc(""), 
+    Note() : pitch::Pitch(), empty(true), letter(""), acc(""), pc(""), 
              chroma(0), height(0), coord({}), midi(std::nullopt), freq(std::nullopt) {}
 };
 
@@ -74,14 +75,14 @@ Note parse(const std::string& noteName);
  * @param pitch The Pitch object to convert
  * @return A note name string
  */
-std::string pitchName(const Pitch& pitch);
+std::string pitchName(const pitch::Pitch& pitch);
 
 /**
  * Convert pitch coordinates to a Note object
  * @param coord The pitch coordinates
  * @return A Note object
  */
-Note coordToNote(const PitchCoordinates& coord);
+Note coordToNote(const pitch::PitchCoordinates& coord);
 
 /**
  * Create a Note object from a note name or a pitch object
@@ -89,7 +90,8 @@ Note coordToNote(const PitchCoordinates& coord);
  * @return A Note object
  */
 Note note(const std::string& src);
-Note note(const Pitch& src);
-Note note(const NamedPitch& src);
+Note note(const pitch::Pitch& src);
+Note note(const pitch::NamedPitch& src);
 
+} // namespace pitch_note
 } // namespace tonalcpp

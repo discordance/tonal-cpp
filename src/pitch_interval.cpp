@@ -6,13 +6,17 @@
 #include <algorithm>
 #include <unordered_map>
 #include <iostream>
+#include <limits>
 
 // Forward declaration of functions in pitch.cpp
 namespace tonalcpp {
+namespace pitch {
     Pitch pitchFromCoordinates(const PitchCoordinates& coord);
+}
 }
 
 namespace tonalcpp {
+namespace pitch_interval {
 
 // Helper function to create repeated strings (like fillStr in TypeScript)
 // Renamed to avoid conflict with pitch_note.cpp
@@ -37,15 +41,17 @@ const Interval NoInterval = Interval();
 
 // Default constructor implementation
 Interval::Interval()
-    : Pitch(), empty(true), name(""), num(NAN), q(""), 
-      type(IntervalType::Unknown), simple(NAN), semitones(NAN), 
-      chroma(NAN), oct(NAN), coord{} {}
+    : pitch::Pitch(), empty(true), name(""), num(std::numeric_limits<double>::quiet_NaN()), q(""), 
+      type(IntervalType::Unknown), simple(std::numeric_limits<double>::quiet_NaN()), 
+      semitones(std::numeric_limits<double>::quiet_NaN()), 
+      chroma(std::numeric_limits<double>::quiet_NaN()), 
+      oct(std::numeric_limits<double>::quiet_NaN()), coord{} {}
 
 // Full constructor implementation
 Interval::Interval(bool emp, const IntervalName& n, int nu, const Quality& qu, IntervalType ty,
                   int s, int a, int d, int sim, int semi, int ch, int o,
-                  const IntervalCoordinates& co)
-    : Pitch(s, a, o, d == 1 ? Direction::Ascending : Direction::Descending, n), 
+                  const pitch::IntervalCoordinates& co)
+    : pitch::Pitch(s, a, o, d == 1 ? pitch::Direction::Ascending : pitch::Direction::Descending, n), 
       empty(emp), name(n), num(nu), q(qu), type(ty),
       simple(sim), semitones(semi), chroma(ch), oct(o), coord(co) {}
 
@@ -103,9 +109,9 @@ Interval parseInterval(const std::string& str) {
     int chroma = ((dirValue * (SIZES[step] + alt)) % 12 + 12) % 12;
     
     // Create coordinates
-    Pitch p(step, alt, oct, dirValue == 1 ? Direction::Ascending : Direction::Descending);
-    PitchCoordinates pitch_coords = coordinates(p);
-    IntervalCoordinates coord = {pitch_coords[0], 
+    pitch::Pitch p(step, alt, oct, dirValue == 1 ? pitch::Direction::Ascending : pitch::Direction::Descending);
+    pitch::PitchCoordinates pitch_coords = pitch::coordinates(p);
+    pitch::IntervalCoordinates coord = {pitch_coords[0], 
                                pitch_coords.size() > 1 ? pitch_coords[1] : 0,
                                dirValue};
     
@@ -144,11 +150,11 @@ Quality altToQ(IntervalType type, int alt) {
 
 // Convert pitch to interval name
 // Renamed to avoid conflict with pitch_note.cpp
-std::string intervalPitchName(const Pitch& props) {
+std::string intervalPitchName(const pitch::Pitch& props) {
     int step = props.step;
     int alt = props.alt;
     int oct = props.oct.value_or(0);
-    Direction dir = props.dir.value_or(Direction::Ascending);
+    pitch::Direction dir = props.dir.value_or(pitch::Direction::Ascending);
     
     if (!props.dir.has_value()) {
         return "";
@@ -158,7 +164,7 @@ std::string intervalPitchName(const Pitch& props) {
     // Edge case for descending pitch class unison (as in TypeScript)
     int num = (calcNum == 0) ? step + 1 : calcNum;
     
-    std::string d = (dir == Direction::Descending) ? "-" : "";
+    std::string d = (dir == pitch::Direction::Descending) ? "-" : "";
     IntervalType type = (TYPES[step] == 'M') ? IntervalType::Majorable : IntervalType::Perfectable;
     std::string name = d + std::to_string(num) + altToQ(type, alt);
     
@@ -166,7 +172,7 @@ std::string intervalPitchName(const Pitch& props) {
 }
 
 // Convert coordinates to interval with force descending option
-Interval coordToInterval(const PitchCoordinates& coord, bool forceDescending) {
+Interval coordToInterval(const pitch::PitchCoordinates& coord, bool forceDescending) {
     // Handle different coordinate types
     if (coord.size() < 2) {
         // PitchClassCoordinates - need at least [fifths, octaves]
@@ -180,7 +186,7 @@ Interval coordToInterval(const PitchCoordinates& coord, bool forceDescending) {
     bool isDescending = f * 7 + o * 12 < 0;
     
     // Create interval coordinates
-    IntervalCoordinates ivl;
+    pitch::IntervalCoordinates ivl;
     if (forceDescending || isDescending) {
         ivl = {-f, -o, -1};
     } else {
@@ -190,7 +196,7 @@ Interval coordToInterval(const PitchCoordinates& coord, bool forceDescending) {
     // Convert coordinates to pitch and then to interval
     // The coordinates are already in the correct format for pitchFromCoordinates
     std::vector<int> coords = {ivl[0], ivl[1], ivl[2]};
-    Pitch p = pitchFromCoordinates(coords);
+    pitch::Pitch p = pitch::pitchFromCoordinates(coords);
     return interval(intervalPitchName(p));
 }
 
@@ -221,4 +227,5 @@ Interval interval(const std::string& src) {
     return interval(src, true);
 }
 
+} // namespace pitch_interval
 } // namespace tonalcpp

@@ -2,6 +2,7 @@
 #include <algorithm>
 
 namespace tonalcpp {
+namespace collection {
 
 // Ascending range helper
 std::vector<int> ascendingRange(int begin, int count) {
@@ -27,4 +28,5 @@ std::vector<int> range(int from, int to) {
         : descendingRange(from, from - to + 1);
 }
 
+} // namespace collection
 } // namespace tonalcpp

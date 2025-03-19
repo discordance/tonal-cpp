@@ -7,6 +7,7 @@
 #include "tonalcpp/pitch.h"
 
 namespace tonalcpp {
+namespace pcset {
 
 /**
  * The properties of a pitch class set
@@ -206,4 +207,5 @@ std::vector<std::string> filter(int set, const std::vector<std::string>& notes);
 std::vector<std::string> filter(const std::vector<std::string>& set, const std::vector<std::string>& notes);
 std::vector<std::string> filter(const Pcset& set, const std::vector<std::string>& notes);
 
+} // namespace pcset
 } // namespace tonalcpp
