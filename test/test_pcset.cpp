@@ -8,7 +8,7 @@ using namespace tonalcpp::test;
 
 TEST_CASE("Pcset basic functionality") {
     SUBCASE("from note list") {
-        auto pcset = get(std::vector<std::string>{"c", "d", "e"});
+        auto pcset = getPcset(std::vector<std::string>{"c", "d", "e"});
         CHECK(pcset.empty == false);
         CHECK(pcset.name == "");
         
@@ -18,16 +18,16 @@ TEST_CASE("Pcset basic functionality") {
         CHECK(pcset.normalized == "100000001010");
         CHECK(pcset.intervals == std::vector<std::string>{"1P", "2M", "3M"});
         
-        CHECK(get(std::vector<std::string>{"d", "e", "c"}).setNum == get(std::vector<std::string>{"c", "d", "e"}).setNum);
-        CHECK(get(std::vector<std::string>{"not a note or interval"}).empty == true);
-        CHECK(get(std::vector<std::string>{}).empty == true);
+        CHECK(getPcset(std::vector<std::string>{"d", "e", "c"}).setNum == getPcset(std::vector<std::string>{"c", "d", "e"}).setNum);
+        CHECK(getPcset(std::vector<std::string>{"not a note or interval"}).empty == true);
+        CHECK(getPcset(std::vector<std::string>{}).empty == true);
     }
     
     SUBCASE("from pcset number") {
-        CHECK(get(2048).chroma == get(std::vector<std::string>{"C"}).chroma);
+        CHECK(getPcset(2048).chroma == getPcset(std::vector<std::string>{"C"}).chroma);
         
-        auto set = get(2048);
-        CHECK(get(set.setNum).setNum == set.setNum);
+        auto set = getPcset(2048);
+        CHECK(getPcset(set.setNum).setNum == set.setNum);
     }
     
     SUBCASE("num") {
@@ -41,13 +41,13 @@ TEST_CASE("Pcset basic functionality") {
     }
     
     SUBCASE("normalized") {
-        const std::string likeC = get(std::vector<std::string>{"C"}).chroma;
+        const std::string likeC = getPcset(std::vector<std::string>{"C"}).chroma;
         std::vector<std::string> pcs = {"c", "d", "e", "f", "g", "a", "b"};
         for (const auto& pc : pcs) {
-            CHECK(get(std::vector<std::string>{pc}).normalized == likeC);
+            CHECK(getPcset(std::vector<std::string>{pc}).normalized == likeC);
         }
         
-        CHECK(get(std::vector<std::string>{"E", "F#"}).normalized == get(std::vector<std::string>{"C", "D"}).normalized);
+        CHECK(getPcset(std::vector<std::string>{"E", "F#"}).normalized == getPcset(std::vector<std::string>{"C", "D"}).normalized);
     }
 }
 
@@ -78,10 +78,10 @@ TEST_CASE("Pcset chroma operations") {
     }
     
     SUBCASE("isChroma") {
-        CHECK(get("101010101010").chroma == "101010101010");
-        CHECK(get("1010101").chroma == "000000000000");
-        CHECK(get("blah").chroma == "000000000000");
-        CHECK(get("c d e").chroma == "000000000000");
+        CHECK(getPcset("101010101010").chroma == "101010101010");
+        CHECK(getPcset("1010101").chroma == "000000000000");
+        CHECK(getPcset("blah").chroma == "000000000000");
+        CHECK(getPcset("c d e").chroma == "000000000000");
     }
 }
 

@@ -77,10 +77,10 @@ int chromaToNumber(const std::string& chroma);
  * @param src The source (can be a Pcset, PcsetChroma, PcsetNum, or array of notes/intervals)
  * @return The Pcset object
  */
-Pcset get(const std::string& src);
-Pcset get(int src);
-Pcset get(const std::vector<std::string>& src);
-Pcset get(const Pcset& pcset);
+Pcset getPcset(const std::string& src);
+Pcset getPcset(int src);
+Pcset getPcset(const std::vector<std::string>& src);
+Pcset getPcset(const Pcset& pcset);
 
 /**
  * Get the intervals in a set (from C)

@@ -53,6 +53,12 @@ if(TONAL_BUILD_TESTS)
   set(TEST_SOURCES
     test/test_main.cpp
     test/test_helpers.cpp
+    test/test_pitch.cpp
+    test/test_pitch_note.cpp
+    test/test_pitch_interval.cpp
+    test/test_pcset.cpp
+    test/test_collection.cpp
+    test/test_chord_type.cpp
   )
   
   add_executable(test_tonalcpp ${TEST_SOURCES})

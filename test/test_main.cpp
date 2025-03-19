@@ -9,11 +9,3 @@
 TEST_CASE("Test framework") {
     CHECK(1 == 1);
 }
-
-// Individual test files
-#include "test_pitch.cpp"
-#include "test_pitch_note.cpp"
-#include "test_pcset.cpp"
-#include "test_collection.cpp"
-#include "test_pitch_interval.cpp"
-#include "test_pitch_distance.cpp"

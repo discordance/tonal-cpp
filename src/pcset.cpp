@@ -165,7 +165,7 @@ Pcset chromaToPcset(const std::string& chroma) {
 }
 
 // Get implementation
-Pcset get(const std::string& src) {
+Pcset getPcset(const std::string& src) {
     // Check if it's a chroma
     if (isChroma(src)) {
         if (pcsetCache.find(src) != pcsetCache.end()) {
@@ -181,20 +181,20 @@ Pcset get(const std::string& src) {
     return EmptyPcset;
 }
 
-Pcset get(int src) {
+Pcset getPcset(int src) {
     if (isPcsetNum(src)) {
         std::string chroma = setNumToChroma(src);
-        return get(chroma);
+        return getPcset(chroma);
     }
     return EmptyPcset;
 }
 
-Pcset get(const std::vector<std::string>& src) {
+Pcset getPcset(const std::vector<std::string>& src) {
     std::string chroma = listToChroma(src);
-    return get(chroma);
+    return getPcset(chroma);
 }
 
-Pcset get(const Pcset& pcset) {
+Pcset getPcset(const Pcset& pcset) {
     if (isPcset(pcset)) {
         return pcset;
     }
@@ -203,66 +203,66 @@ Pcset get(const Pcset& pcset) {
 
 // Interval implementations
 std::vector<std::string> intervals(const std::string& src) {
-    return get(src).intervals;
+    return getPcset(src).intervals;
 }
 
 std::vector<std::string> intervals(int src) {
-    return get(src).intervals;
+    return getPcset(src).intervals;
 }
 
 std::vector<std::string> intervals(const std::vector<std::string>& src) {
-    return get(src).intervals;
+    return getPcset(src).intervals;
 }
 
 std::vector<std::string> intervals(const Pcset& pcset) {
-    return get(pcset).intervals;
+    return getPcset(pcset).intervals;
 }
 
 // Chroma implementations
 std::string chroma(const std::string& src) {
-    return get(src).chroma;
+    return getPcset(src).chroma;
 }
 
 std::string chroma(int src) {
-    return get(src).chroma;
+    return getPcset(src).chroma;
 }
 
 std::string chroma(const std::vector<std::string>& src) {
-    return get(src).chroma;
+    return getPcset(src).chroma;
 }
 
 std::string chroma(const Pcset& pcset) {
-    return get(pcset).chroma;
+    return getPcset(pcset).chroma;
 }
 
 // Num implementations
 int num(const std::string& src) {
-    return get(src).setNum;
+    return getPcset(src).setNum;
 }
 
 int num(int src) {
-    return get(src).setNum;
+    return getPcset(src).setNum;
 }
 
 int num(const std::vector<std::string>& src) {
-    return get(src).setNum;
+    return getPcset(src).setNum;
 }
 
 int num(const Pcset& pcset) {
-    return get(pcset).setNum;
+    return getPcset(pcset).setNum;
 }
 
 // Notes implementation
 std::vector<std::string> notes(const std::string& src) {
-    return notes(get(src));
+    return notes(getPcset(src));
 }
 
 std::vector<std::string> notes(int src) {
-    return notes(get(src));
+    return notes(getPcset(src));
 }
 
 std::vector<std::string> notes(const std::vector<std::string>& src) {
-    return notes(get(src));
+    return notes(getPcset(src));
 }
 
 std::vector<std::string> notes(const Pcset& pcset) {
@@ -287,7 +287,7 @@ std::vector<std::string> chromas() {
 
 // Modes implementation
 std::vector<std::string> modes(const std::string& src, bool normalize) {
-    Pcset pcs = get(src);
+    Pcset pcs = getPcset(src);
     
     std::vector<char> binary(pcs.chroma.begin(), pcs.chroma.end());
     std::vector<std::string> result;
@@ -305,11 +305,11 @@ std::vector<std::string> modes(const std::string& src, bool normalize) {
 }
 
 std::vector<std::string> modes(int src, bool normalize) {
-    return modes(get(src), normalize);
+    return modes(getPcset(src), normalize);
 }
 
 std::vector<std::string> modes(const std::vector<std::string>& src, bool normalize) {
-    return modes(get(src), normalize);
+    return modes(getPcset(src), normalize);
 }
 
 std::vector<std::string> modes(const Pcset& pcset, bool normalize) {
@@ -318,35 +318,35 @@ std::vector<std::string> modes(const Pcset& pcset, bool normalize) {
 
 // IsEqual implementation
 bool isEqual(const std::string& s1, const std::string& s2) {
-    return get(s1).setNum == get(s2).setNum;
+    return getPcset(s1).setNum == getPcset(s2).setNum;
 }
 
 bool isEqual(int s1, int s2) {
-    return get(s1).setNum == get(s2).setNum;
+    return getPcset(s1).setNum == getPcset(s2).setNum;
 }
 
 bool isEqual(const std::vector<std::string>& s1, const std::vector<std::string>& s2) {
-    return get(s1).setNum == get(s2).setNum;
+    return getPcset(s1).setNum == getPcset(s2).setNum;
 }
 
 bool isEqual(const Pcset& s1, const Pcset& s2) {
-    return get(s1).setNum == get(s2).setNum;
+    return getPcset(s1).setNum == getPcset(s2).setNum;
 }
 
 // IsSubsetOf implementation
 bool isSubsetOf(const std::string& superset, const std::string& subset) {
-    int s = get(superset).setNum;
-    int o = get(subset).setNum;
+    int s = getPcset(superset).setNum;
+    int o = getPcset(subset).setNum;
     
     return s && s != o && (o & s) == o;
 }
 
 bool isSubsetOf(int superset, int subset) {
-    return isSubsetOf(get(superset), get(subset));
+    return isSubsetOf(getPcset(superset), getPcset(subset));
 }
 
 bool isSubsetOf(const std::vector<std::string>& superset, const std::vector<std::string>& subset) {
-    return isSubsetOf(get(superset), get(subset));
+    return isSubsetOf(getPcset(superset), getPcset(subset));
 }
 
 bool isSubsetOf(const Pcset& superset, const Pcset& subset) {
@@ -358,18 +358,18 @@ bool isSubsetOf(const Pcset& superset, const Pcset& subset) {
 
 // IsSupersetOf implementation
 bool isSupersetOf(const std::string& subset, const std::string& superset) {
-    int s = get(subset).setNum;
-    int o = get(superset).setNum;
+    int s = getPcset(subset).setNum;
+    int o = getPcset(superset).setNum;
     
     return s && s != o && (o | s) == o;
 }
 
 bool isSupersetOf(int subset, int superset) {
-    return isSupersetOf(get(subset), get(superset));
+    return isSupersetOf(getPcset(subset), getPcset(superset));
 }
 
 bool isSupersetOf(const std::vector<std::string>& subset, const std::vector<std::string>& superset) {
-    return isSupersetOf(get(subset), get(superset));
+    return isSupersetOf(getPcset(subset), getPcset(superset));
 }
 
 bool isSupersetOf(const Pcset& subset, const Pcset& superset) {
@@ -381,7 +381,7 @@ bool isSupersetOf(const Pcset& subset, const Pcset& superset) {
 
 // IsNoteIncludedIn implementation
 bool isNoteIncludedIn(const std::string& set, const std::string& noteName) {
-    Pcset pcset = get(set);
+    Pcset pcset = getPcset(set);
     Note n = note(noteName);
     
     if (n.empty || pcset.empty) {
@@ -393,11 +393,11 @@ bool isNoteIncludedIn(const std::string& set, const std::string& noteName) {
 }
 
 bool isNoteIncludedIn(int set, const std::string& noteName) {
-    return isNoteIncludedIn(get(set), noteName);
+    return isNoteIncludedIn(getPcset(set), noteName);
 }
 
 bool isNoteIncludedIn(const std::vector<std::string>& set, const std::string& noteName) {
-    return isNoteIncludedIn(get(set), noteName);
+    return isNoteIncludedIn(getPcset(set), noteName);
 }
 
 bool isNoteIncludedIn(const Pcset& set, const std::string& noteName) {
@@ -413,15 +413,15 @@ bool isNoteIncludedIn(const Pcset& set, const std::string& noteName) {
 
 // Filter implementation
 std::vector<std::string> filter(const std::string& set, const std::vector<std::string>& notes) {
-    return filter(get(set), notes);
+    return filter(getPcset(set), notes);
 }
 
 std::vector<std::string> filter(int set, const std::vector<std::string>& notes) {
-    return filter(get(set), notes);
+    return filter(getPcset(set), notes);
 }
 
 std::vector<std::string> filter(const std::vector<std::string>& set, const std::vector<std::string>& notes) {
-    return filter(get(set), notes);
+    return filter(getPcset(set), notes);
 }
 
 std::vector<std::string> filter(const Pcset& set, const std::vector<std::string>& notes) {
