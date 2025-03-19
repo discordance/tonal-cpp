@@ -2,6 +2,37 @@
 
 This is a C++ port of the [tonal.js](https://github.com/tonaljs/tonal) music theory library, with a focus on the chord detection functionality.
 
+## C++ Implementation Status
+
+### Packages Ported to C++ (with tests)
+- **pitch**: Core pitch representation and manipulation
+- **pitch_note**: Note operations and conversions
+- **pitch_interval**: Interval operations and conversions
+- **pitch_distance**: Functions to calculate distances between pitches
+- **pcset**: Pitch class sets functionality
+- **collection**: Utility functions for collections
+- **chord_type**: Dictionary of chord types and related operations
+- **chord-detect**: Chord detection from notes
+
+### Packages Not Yet Ported to C++
+- **chord**: Chord operations
+- **duration-value**: Note duration values
+- **interval**: Interval operations
+- **key**: Key functionality
+- **midi**: MIDI number conversions
+- **mode**: Mode dictionary
+- **note**: Note operations
+- **progression**: Chord progressions
+- **range**: Note range operations
+- **rhythm-pattern**: Rhythm pattern operations
+- **roman-numeral**: Roman numeral parsing
+- **scale**: Scale operations
+- **scale-type**: Scale type dictionary
+- **time-signature**: Time signature parsing
+- **voice-leading**: Voice leading operations
+- **voicing**: Chord voicing operations
+- **voicing-dictionary**: Dictionary of chord voicings
+
 ## Project Structure
 
 ```
@@ -29,24 +60,3 @@ cmake -S . -B build
 cmake --build build
 ./build/test_tonalcpp
 ```
-
-## Implementation Details
-
-This is a port of the following packages from tonal.js:
-
-1. Core packages:
-   - pitch - Core pitch representation
-   - collection - Utility functions for collections
-
-2. Mid-level packages:
-   - pitch-note - Note representation and operations 
-   - pitch-interval - Interval representation and operations
-   - pcset - Pitch class set operations
-
-3. High-level packages:
-   - chord-type - Chord type definitions
-   - chord-detect - Chord detection algorithm
-
-## License
-
-Same as tonal.js (MIT)
