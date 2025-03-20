@@ -12,7 +12,7 @@ This is a C++ port of the [tonal.js](https://github.com/tonaljs/tonal) music the
 - **pcset**: Pitch class sets functionality
 - **collection**: Utility functions for collections
 - **chord_type**: Dictionary of chord types and related operations
-- **chord-detect**: Chord detection from notes
+- **chord_detect**: Chord detection from notes
 
 ### Packages Not Yet Ported to C++
 - **chord**: Chord operations

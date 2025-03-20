@@ -64,10 +64,4 @@ std::vector<std::string> tonicIntervalsTransposer(
     const std::string& tonic);
 
 } // namespace pitch_distance
-
-// Also provide functions at the root namespace level for backward compatibility
-using pitch_distance::transpose;
-using pitch_distance::distance;
-using pitch_distance::tonicIntervalsTransposer;
-
 } // namespace tonalcpp

@@ -18,14 +18,24 @@ namespace pitch {
 namespace tonalcpp {
 namespace pitch_interval {
 
-// Helper function to create repeated strings (like fillStr in TypeScript)
+// Helper function to create repeated strings
+// In TypeScript: fillStr = (s, n) => Array(Math.abs(n) + 1).join(s)
 // Renamed to avoid conflict with pitch_note.cpp
 std::string intervalFillStr(const std::string& s, int n) {
     std::string result;
-    result.reserve(s.length() * n);
-    for (int i = 0; i < n; i++) {
+    // JavaScript's Array(n+1).join(s) creates n copies of s
+    // For example, Array(3+1).join("A") creates 3 copies: "AAA"
+    int absN = std::abs(n);
+    
+    if (absN <= 0) {
+        return "";
+    }
+    
+    result.reserve(s.length() * absN);
+    for (int i = 0; i < absN; i++) {
         result += s;
     }
+
     return result;
 }
 
@@ -136,36 +146,61 @@ int qToAlt(IntervalType type, const Quality& q) {
 }
 
 // Convert alteration to quality
+// This function implements the exact same logic as in TypeScript
 Quality altToQ(IntervalType type, int alt) {
     if (alt == 0) {
+        // Perfect or Major
         return (type == IntervalType::Majorable) ? "M" : "P";
     } else if (alt == -1 && type == IntervalType::Majorable) {
+        // Minor (only for majorable intervals)
         return "m";
     } else if (alt > 0) {
+        // Augmented (A, AA, AAA...)
         return intervalFillStr("A", alt);
     } else {
-        return intervalFillStr("d", type == IntervalType::Perfectable ? std::abs(alt) : std::abs(alt + 1));
+        // Diminished (d, dd, ddd...)
+        // In TypeScript:
+        // For perfectable intervals:
+        //   5P -> 5d would be alt = -1, so we return "d"
+        //   5P -> 5dd would be alt = -2, so we return "dd"
+        // For majorable intervals:
+        //   3M -> 3d would be alt = -2, so we return "d"
+        //   3M -> 3dd would be alt = -3, so we return "dd"
+        int diminished = (type == IntervalType::Perfectable) ? alt : alt + 1;
+        return intervalFillStr("d", diminished);
     }
 }
 
-// Convert pitch to interval name
+// Convert pitch to interval name (equivalent to pitchName in TypeScript)
 // Renamed to avoid conflict with pitch_note.cpp
 std::string intervalPitchName(const pitch::Pitch& props) {
     int step = props.step;
     int alt = props.alt;
     int oct = props.oct.value_or(0);
-    pitch::Direction dir = props.dir.value_or(pitch::Direction::Ascending);
     
+    // Check if direction is available - matching TypeScript implementation
     if (!props.dir.has_value()) {
         return "";
     }
     
-    int calcNum = step + 1 + 7 * oct;
-    // Edge case for descending pitch class unison (as in TypeScript)
-    int num = (calcNum == 0) ? step + 1 : calcNum;
+    // Get direction value as an int to match TypeScript implementation
+    int dir = props.dir.value() == pitch::Direction::Descending ? -1 : 1;
     
-    std::string d = (dir == pitch::Direction::Descending) ? "-" : "";
+    // Calculate the interval number (always positive)
+    int calcNum = step + 1 + 7 * oct;
+    
+    // Edge case for descending pitch class unison (as in TypeScript)
+    // In TypeScript: const num = calcNum === 0 ? step + 1 : calcNum;
+    int num = (calcNum == 0) ? step + 1 : calcNum;
+
+    // Direction prefix
+    // In TypeScript: const d = dir < 0 ? "-" : "";
+    std::string d = dir < 0 ? "-" : "";
+    
+    // Get the interval type from the step
     IntervalType type = (TYPES[step] == 'M') ? IntervalType::Majorable : IntervalType::Perfectable;
+    
+    // Build the interval name: direction + number + quality
     std::string name = d + std::to_string(num) + altToQ(type, alt);
     
     return name;
@@ -173,31 +208,35 @@ std::string intervalPitchName(const pitch::Pitch& props) {
 
 // Convert coordinates to interval with force descending option
 Interval coordToInterval(const pitch::PitchCoordinates& coord, bool forceDescending) {
-    // Handle different coordinate types
-    if (coord.size() < 2) {
-        // PitchClassCoordinates - need at least [fifths, octaves]
+    // Check for minimum required coordinates
+    if (coord.empty()) {
         return NoInterval;
     }
     
+    // Extract the fifths and octaves from coordinates - match TypeScript implementation
     int f = coord[0];
     int o = (coord.size() > 1) ? coord[1] : 0;
-    
-    // Check if descending
+
+    // Check if descending - the calculation is f * 7 + o * 12 < 0
+    // This is exactly the same as in TypeScript
     bool isDescending = f * 7 + o * 12 < 0;
     
-    // Create interval coordinates
-    pitch::IntervalCoordinates ivl;
+    // Create interval coordinates - match the TypeScript implementation exactly
+    pitch::PitchCoordinates ivl;
     if (forceDescending || isDescending) {
+        // For descending intervals, we negate the fifths and octaves
         ivl = {-f, -o, -1};
     } else {
         ivl = {f, o, 1};
     }
     
-    // Convert coordinates to pitch and then to interval
-    // The coordinates are already in the correct format for pitchFromCoordinates
-    std::vector<int> coords = {ivl[0], ivl[1], ivl[2]};
-    pitch::Pitch p = pitch::pitchFromCoordinates(coords);
-    return interval(intervalPitchName(p));
+    // Create a pitch from the coordinates
+    pitch::Pitch p = pitch::pitchFromCoordinates(ivl);
+    
+    // Get the interval name and create the interval
+    auto name = intervalPitchName(p);
+    
+    return interval(name);
 }
 
 // Main interval function with caching
@@ -224,6 +263,7 @@ Interval interval(const std::string& src, bool useCache) {
 
 // Default interval function (uses cache)
 Interval interval(const std::string& src) {
+
     return interval(src, true);
 }
 

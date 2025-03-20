@@ -142,20 +142,20 @@ Pitch pitchFromCoordinates(const PitchCoordinates& coord) {
         return Pitch();
     }
     
+    // Get the fifths component (first coordinate)
     int f = coord[0];
-    std::optional<int> o = coord.size() > 1 ? std::optional<int>(coord[1]) : std::nullopt;
-    std::optional<Direction> dir = std::nullopt;
     
-    // If we have a third component, it's the direction for intervals
+    // Get the octave component (second coordinate) if it exists
+    std::optional<int> o = coord.size() > 1 ? std::optional<int>(coord[1]) : std::nullopt;
+    
+    // Direction is determined by the third component
+    std::optional<Direction> dir = std::nullopt;
     if (coord.size() > 2) {
         dir = coord[2] < 0 ? Direction::Descending : Direction::Ascending;
-        
-        // Adjust f and o based on direction
-        if (*dir == Direction::Descending) {
-            f = -f;
-            if (o.has_value()) o = -(*o);
-        }
     }
+    
+    // We don't need to negate fifths and octaves here because
+    // they're already negated in coordToInterval
     
     // Calculate step and alteration
     int step = FIFTHS_TO_STEPS[unaltered(f)];
