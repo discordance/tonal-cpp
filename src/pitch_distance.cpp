@@ -65,9 +65,11 @@ std::string transpose(const std::string& noteName, const std::string& intervalNa
             noteCoord[1] + intervalCoord[1]
         };
     }
+
+    auto nn = pitch_note::coordToNote(result).name;
     
     // Convert back to a note and return its name
-    return pitch_note::coordToNote(result).name;
+    return nn;
 }
 
 /**

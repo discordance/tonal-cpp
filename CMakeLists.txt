@@ -33,6 +33,7 @@ set(LIB_SOURCES
     src/pcset.cpp
     src/chord_type.cpp
     src/chord_detect.cpp
+    src/chord.cpp
     src/interval.cpp
 )
 
@@ -61,6 +62,7 @@ if(TONAL_BUILD_TESTS)
     test/test_collection.cpp
     test/test_chord_type.cpp
     test/test_chord_detect.cpp
+    test/test_chord.cpp
     test/test_interval.cpp
   )
   
