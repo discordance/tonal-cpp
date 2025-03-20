@@ -13,13 +13,13 @@ This is a C++ port of the [tonal.js](https://github.com/tonaljs/tonal) music the
 - **collection**: Utility functions for collections
 - **chord_type**: Dictionary of chord types and related operations
 - **chord_detect**: Chord detection from notes
+- **chord**: Chord operations
+- **interval**: Interval operations
+- **midi**: MIDI number conversions
 
 ### Packages Not Yet Ported to C++
-- **chord**: Chord operations
 - **duration-value**: Note duration values
-- **interval**: Interval operations
 - **key**: Key functionality
-- **midi**: MIDI number conversions
 - **mode**: Mode dictionary
 - **note**: Note operations
 - **progression**: Chord progressions

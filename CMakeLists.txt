@@ -35,6 +35,7 @@ set(LIB_SOURCES
     src/chord_detect.cpp
     src/chord.cpp
     src/interval.cpp
+    src/midi.cpp
 )
 
 # Create static library
@@ -64,6 +65,7 @@ if(TONAL_BUILD_TESTS)
     test/test_chord_detect.cpp
     test/test_chord.cpp
     test/test_interval.cpp
+    test/test_midi.cpp
   )
   
   add_executable(test_tonalcpp ${TEST_SOURCES})
