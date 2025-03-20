@@ -1,6 +1,7 @@
 #include "doctest.h"
 #include "tonalcpp/chord_type.h"
 #include "tonalcpp/pitch_interval.h"
+#include "test_helpers.h"
 #include <vector>
 #include <string>
 #include <algorithm>

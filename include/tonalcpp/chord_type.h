@@ -108,14 +108,7 @@ ChordQuality getQuality(const std::vector<std::string>& intervals);
  */
 void initChordTypes();
 
-/**
- * Split a string by spaces, matching JavaScript's split() behavior
- * which includes empty tokens when there are consecutive, leading, or trailing spaces
- * 
- * @param str The string to split
- * @return Vector of tokens
- */
-std::vector<std::string> split(const std::string& str);
+// Using split from helpers
 
 } // namespace chord_type
 } // namespace tonalcpp

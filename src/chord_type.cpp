@@ -1,5 +1,6 @@
 #include "tonalcpp/chord_type.h"
 #include "tonalcpp/pcset.h"
+#include "tonalcpp/helpers.h"
 #include <algorithm>
 #include <sstream>
 
@@ -175,31 +176,7 @@ void addAlias(const ChordType& chord, const std::string& alias) {
     index[alias] = chord;
 }
 
-// Split a string by spaces, matching JavaScript's split() behavior
-// which includes empty tokens when there are consecutive delimiters
-std::vector<std::string> split(const std::string& str) {
-    std::vector<std::string> tokens;
-    std::string token;
-    size_t pos = 0;
-    
-    // If empty string, return empty vector
-    if (str.empty()) {
-        return tokens;
-    }
-    
-    // Handle the JavaScript split behavior
-    size_t found = str.find(' ');
-    while (found != std::string::npos) {
-        tokens.push_back(str.substr(pos, found - pos));
-        pos = found + 1;
-        found = str.find(' ', pos);
-    }
-    
-    // Add the remaining part (or empty if ends with delimiter)
-    tokens.push_back(str.substr(pos));
-    
-    return tokens;
-}
+// Using split from helpers namespace
 
 // Add a chord to the dictionary
 void add(const std::vector<std::string>& intervals, 
@@ -320,9 +297,9 @@ void initChordTypes() {
     // Add each chord from the CHORDS data
     for (const auto& chordData : CHORDS) {
         // Split the intervals and aliases on spaces
-        const auto& intervals = split(chordData[0]);
+        const auto& intervals = helpers::split(chordData[0]);
         const auto& fullName = chordData[1];
-        const auto& aliases = split(chordData[2]);
+        const auto& aliases = helpers::split(chordData[2]);
         
         // Add to the dictionary
         add(intervals, aliases, fullName);
