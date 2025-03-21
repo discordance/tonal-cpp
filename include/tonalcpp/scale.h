@@ -17,7 +17,7 @@ namespace scale {
  * A full Scale representation
  */
 struct Scale : public scale_type::ScaleType {
-    std::string tonic;
+    std::optional<std::string> tonic;
     std::string type;
     std::vector<std::string> notes;
 };

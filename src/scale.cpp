@@ -27,7 +27,7 @@ const Scale NoScale = []() {
     // ScaleType fields
     s.aliases = {};
     // Scale fields
-    s.tonic = "";
+    s.tonic = std::nullopt;
     s.type = "";
     s.notes = {};
     return s;
@@ -94,15 +94,18 @@ Scale get(const ScaleNameTokens& tokens) {
     scale.type = st.name;
     
     // Only use valid note names as tonic
-    const std::string tonic = tonicNote.empty ? "" : tonicNote.name;
-    scale.tonic = tonic;
+    if (tonicNote.empty) {
+        scale.tonic = std::nullopt;
+    } else {
+        scale.tonic = tonicNote.name;
+    }
     
     // Generate notes only if we have a valid tonic
-    if (!tonic.empty()) {
+    if (scale.tonic) {
         for (const auto& interval : st.intervals) {
-            scale.notes.push_back(pitch_distance::transpose(tonic, interval));
+            scale.notes.push_back(pitch_distance::transpose(*scale.tonic, interval));
         }
-        scale.name = tonic + " " + st.name;
+        scale.name = *scale.tonic + " " + st.name;
     }
     
     return scale;
@@ -279,7 +282,7 @@ std::vector<std::tuple<std::string, std::string>> modeNames(const std::string& n
         return {};
     }
     
-    const std::vector<std::string>& tonics = s.tonic.empty() ? s.intervals : s.notes;
+    const std::vector<std::string>& tonics = s.tonic.has_value() ? s.notes : s.intervals;
     const auto modesChromas = pcset::modes(s.chroma);
     
     std::vector<std::tuple<std::string, std::string>> result;
@@ -453,7 +456,7 @@ std::vector<std::string> rangeOf(
     // If the scale has no tonic (like "pentatonic"), get(scale).notes will be empty
     // and the test should return an empty vector
     auto s = get(scale);
-    if (s.notes.empty()) {
+    if (s.notes.empty() || !s.tonic.has_value()) {
         return {};
     }
     
@@ -524,12 +527,12 @@ std::string degrees(const std::string& scaleName, int degree) {
     }
     
     const Scale s = get(scaleName);
-    if (s.empty || s.intervals.empty()) {
+    if (s.empty || s.intervals.empty() || !s.tonic.has_value()) {
         return "";
     }
     
     const auto& intervals = s.intervals;
-    const std::string& tonic = s.tonic;
+    const std::string& tonic = *s.tonic;
     
     // Use the same logic as steps but adjust the index
     int index;
@@ -575,12 +578,12 @@ std::string degrees(const ScaleNameTokens& scaleName, int degree) {
     }
     
     const Scale s = get(scaleName);
-    if (s.empty || s.intervals.empty()) {
+    if (s.empty || s.intervals.empty() || !s.tonic.has_value()) {
         return "";
     }
     
     const auto& intervals = s.intervals;
-    const std::string& tonic = s.tonic;
+    const std::string& tonic = *s.tonic;
     
     // Use the same logic as steps but adjust the index
     int index;
@@ -622,12 +625,12 @@ std::string degrees(const ScaleNameTokens& scaleName, int degree) {
 
 std::string steps(const std::string& scaleName, int step) {
     const Scale s = get(scaleName);
-    if (s.empty || s.intervals.empty()) {
+    if (s.empty || s.intervals.empty() || !s.tonic.has_value()) {
         return "";
     }
     
     const auto& intervals = s.intervals;
-    const std::string& tonic = s.tonic;
+    const std::string& tonic = *s.tonic;
     
     // Calculate the actual index in the intervals array
     const int size = static_cast<int>(intervals.size());
@@ -657,12 +660,12 @@ std::string steps(const std::string& scaleName, int step) {
 
 std::string steps(const ScaleNameTokens& scaleName, int step) {
     const Scale s = get(scaleName);
-    if (s.empty || s.intervals.empty()) {
+    if (s.empty || s.intervals.empty() || !s.tonic.has_value()) {
         return "";
     }
     
     const auto& intervals = s.intervals;
-    const std::string& tonic = s.tonic;
+    const std::string& tonic = *s.tonic;
     
     // Calculate the actual index in the intervals array
     const int size = static_cast<int>(intervals.size());

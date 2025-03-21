@@ -15,7 +15,7 @@ std::vector<std::string> split(const std::string& s) {
 TEST_CASE("scale::get") {
     scale::Scale major = scale::get("major");
     CHECK(major.empty == false);
-    CHECK(major.tonic == "");
+    CHECK(major.tonic.has_value() == false);
     CHECK(major.notes.empty());
     CHECK(major.type == "major");
     CHECK(major.name == "major");
@@ -29,7 +29,8 @@ TEST_CASE("scale::get") {
     CHECK(pentatonic.empty == false);
     CHECK(pentatonic.name == "C5 major pentatonic");
     CHECK(pentatonic.type == "major pentatonic");
-    CHECK(pentatonic.tonic == "C5");
+    CHECK(pentatonic.tonic.has_value() == true);
+    CHECK(*pentatonic.tonic == "C5");
     CHECK(pentatonic.notes == split("C5 D5 E5 G5 A5"));
     CHECK(pentatonic.intervals == split("1P 2M 3M 5P 6M"));
     CHECK(pentatonic.aliases == std::vector<std::string>{"pentatonic"});
