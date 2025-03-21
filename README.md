@@ -17,24 +17,29 @@ This is a C++ port of the [tonal.js](https://github.com/tonaljs/tonal) music the
 - **chord**: Chord operations
 - **interval**: Interval operations
 - **midi**: MIDI number conversions
+- **scale_type**: Dictionary of scale types and related operations
+- **scale**: Scale operations
 - **helpers**: Utility functions used across the library
 
 ### Packages Not Yet Ported to C++
-- **abc-notation**: ABC notation parsing
-- **array**: Array manipulation utilities
 - **duration-value**: Note duration values
 - **key**: Key functionality
 - **mode**: Mode dictionary
-- **notation-scientific**: Scientific notation parsing
 - **progression**: Chord progressions
-- **range**: Note range operations
 - **rhythm-pattern**: Rhythm pattern operations
-- **roman-numeral**: Roman numeral parsing
-- **scale-dictionary**: Dictionary of scales
 - **time-signature**: Time signature parsing
 - **voice-leading**: Voice leading operations
+
+
+### Packages that won't be ported to C++ (yet)
+- **abc-notation**: ABC notation parsing
+- **array**: Array manipulation utilities
 - **voicing**: Chord voicing operations
 - **voicing-dictionary**: Dictionary of chord voicings
+- **roman-numeral**: Roman numeral parsing
+- **notation-scientific**: Scientific notation parsing
+- **range**: Note range operations
+
 
 ## Project Structure
 
