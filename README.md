@@ -1,4 +1,4 @@
-# TonalCpp - C++ Port of tonal.js
+# TonalCpp
 
 This is a C++ port of the [tonal.js](https://github.com/tonaljs/tonal) music theory library, with a focus on the chord detection functionality.
 
@@ -9,6 +9,7 @@ This is a C++ port of the [tonal.js](https://github.com/tonaljs/tonal) music the
 - **pitch_note**: Note operations and conversions
 - **pitch_interval**: Interval operations and conversions
 - **pitch_distance**: Functions to calculate distances between pitches
+- **note**: Note operations
 - **pcset**: Pitch class sets functionality
 - **collection**: Utility functions for collections
 - **chord_type**: Dictionary of chord types and related operations
@@ -16,18 +17,22 @@ This is a C++ port of the [tonal.js](https://github.com/tonaljs/tonal) music the
 - **chord**: Chord operations
 - **interval**: Interval operations
 - **midi**: MIDI number conversions
+- **helpers**: Utility functions used across the library
 
 ### Packages Not Yet Ported to C++
+- **abc-notation**: ABC notation parsing
+- **array**: Array manipulation utilities
 - **duration-value**: Note duration values
 - **key**: Key functionality
 - **mode**: Mode dictionary
-- **note**: Note operations
+- **notation-scientific**: Scientific notation parsing
 - **progression**: Chord progressions
 - **range**: Note range operations
 - **rhythm-pattern**: Rhythm pattern operations
 - **roman-numeral**: Roman numeral parsing
 - **scale**: Scale operations
 - **scale-type**: Scale type dictionary
+- **scale-dictionary**: Dictionary of scales
 - **time-signature**: Time signature parsing
 - **voice-leading**: Voice leading operations
 - **voicing**: Chord voicing operations
