@@ -20,13 +20,13 @@ using ChordNameTokens = std::array<std::string, 3>; // [TONIC, CHORD_TYPE, BASS]
  * Interface for Chord object that extends ChordType
  */
 struct Chord : public chord_type::ChordType {
-    std::string tonic;         // The tonic note (or null)
-    std::string type;          // Chord type name
-    std::string root;          // Root note
-    std::string bass;          // Bass note (for slash chords)
-    std::optional<int> rootDegree; // Position of the root in the chord (1-based) or nullopt if not present
-    std::string symbol;        // Chord symbol
-    std::vector<std::string> notes; // Actual chord notes
+    std::optional<std::string> tonic; // The tonic note (or nullopt)
+    std::string type;                 // Chord type name
+    std::string root;                 // Root note
+    std::string bass;                 // Bass note (for slash chords)
+    std::optional<int> rootDegree;    // Position of the root in the chord (1-based) or nullopt if not present
+    std::string symbol;               // Chord symbol
+    std::vector<std::string> notes;   // Actual chord notes
 };
 
 // Empty chord constant

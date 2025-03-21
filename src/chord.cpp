@@ -33,7 +33,7 @@ const Chord NoChord = {
     },
     
     // Chord-specific fields
-    "", // tonic
+    std::nullopt, // tonic
     "", // type
     "", // root
     "", // bass
@@ -136,7 +136,7 @@ Chord getChord(const std::string& typeName,
     
     if (hasRoot) {
         // Rotate intervals according to root degree
-        for (int i = 1; i < rootDegree; i++) {
+        for (int i = 1; i < rootDegree.value_or(0); i++) {
             if (!intervals.empty()) {
                 // Get first interval
                 std::string firstInterval = intervals[0];
@@ -178,8 +178,14 @@ Chord getChord(const std::string& typeName,
         : (!type.aliases.empty() ? type.aliases[0] : "");
     
     // Build chord symbol
-    std::string symbol = (tonic.empty ? "" : tonic.pc) + preferredAlias;
-    if (hasRoot && rootDegree > 1) {
+    std::string symbol;
+    if (tonic.empty) {
+        symbol = preferredAlias; // When no tonic, just use the chord type alias
+    } else {
+        symbol = tonic.pc + preferredAlias;
+    }
+    
+    if (hasRoot && rootDegree.value_or(0) > 1) {
         symbol += "/" + root.pc;
     } else if (hasBass) {
         symbol += "/" + bass.pc;
@@ -187,7 +193,7 @@ Chord getChord(const std::string& typeName,
     
     // Build full chord name
     std::string name = (optionalTonic.empty() ? "" : tonic.pc + " ") + type.name;
-    if (hasRoot && rootDegree > 1) {
+    if (hasRoot && rootDegree.value_or(0) > 1) {
         name += " over " + root.pc;
     } else if (hasBass) {
         name += " over " + bass.pc;
@@ -207,7 +213,7 @@ Chord getChord(const std::string& typeName,
     chord.aliases = type.aliases;
     
     // Set Chord-specific fields
-    chord.tonic = tonic.pc;
+    chord.tonic = tonic.empty ? std::nullopt : std::make_optional(tonic.pc);
     chord.type = type.name;
     chord.root = root.pc;
     chord.bass = hasBass ? bass.pc : "";
@@ -250,8 +256,8 @@ std::vector<std::string> extended(const std::string& chordName) {
     auto allChordTypes = chord_type::all();
     for (const auto& chordType : allChordTypes) {
         // Check if chordType is a superset of s
-        if (pcset::isSupersetOf(s.chroma, chordType.chroma) && !s.tonic.empty()) {
-            result.push_back(s.tonic + (!chordType.aliases.empty() ? chordType.aliases[0] : ""));
+        if (pcset::isSupersetOf(s.chroma, chordType.chroma) && s.tonic.has_value()) {
+            result.push_back(*s.tonic + (!chordType.aliases.empty() ? chordType.aliases[0] : ""));
         }
     }
     
@@ -267,8 +273,8 @@ std::vector<std::string> reduced(const std::string& chordName) {
     auto allChordTypes = chord_type::all();
     for (const auto& chordType : allChordTypes) {
         // Check if chordType is a subset of s
-        if (pcset::isSubsetOf(s.chroma, chordType.chroma) && !s.tonic.empty()) {
-            result.push_back(s.tonic + (!chordType.aliases.empty() ? chordType.aliases[0] : ""));
+        if (pcset::isSubsetOf(s.chroma, chordType.chroma) && s.tonic.has_value()) {
+            result.push_back(*s.tonic + (!chordType.aliases.empty() ? chordType.aliases[0] : ""));
         }
     }
     
@@ -277,9 +283,18 @@ std::vector<std::string> reduced(const std::string& chordName) {
 
 std::vector<std::string> notes(const std::string& chordName, const std::string& tonic) {
     Chord chord = get(chordName);
-    std::string noteToUse = tonic.empty() ? chord.tonic : tonic;
     
-    if (noteToUse.empty() || chord.empty) {
+    // Use provided tonic or the chord's tonic if available
+    std::string noteToUse;
+    if (!tonic.empty()) {
+        noteToUse = tonic;
+    } else if (chord.tonic.has_value()) {
+        noteToUse = *chord.tonic;
+    } else {
+        return {}; // No tonic available
+    }
+    
+    if (chord.empty) {
         return {};
     }
     
@@ -299,9 +314,18 @@ std::string degreeToNote(const std::string& chordName, int degree, const std::st
     if (degree == 0) return "";
     
     Chord chord = get(chordName);
-    std::string noteToUse = tonic.empty() ? chord.tonic : tonic;
     
-    if (noteToUse.empty() || chord.empty) {
+    // Use provided tonic or the chord's tonic if available
+    std::string noteToUse;
+    if (!tonic.empty()) {
+        noteToUse = tonic;
+    } else if (chord.tonic.has_value()) {
+        noteToUse = *chord.tonic;
+    } else {
+        return ""; // No tonic available
+    }
+    
+    if (chord.empty) {
         return "";
     }
     
@@ -341,9 +365,18 @@ std::string degreeToNote(const std::vector<std::string>& tokens, int degree, con
 
 std::string stepToNote(const std::string& chordName, int step, const std::string& tonic) {
     Chord chord = get(chordName);
-    std::string noteToUse = tonic.empty() ? chord.tonic : tonic;
     
-    if (noteToUse.empty() || chord.empty) {
+    // Use provided tonic or the chord's tonic if available
+    std::string noteToUse;
+    if (!tonic.empty()) {
+        noteToUse = tonic;
+    } else if (chord.tonic.has_value()) {
+        noteToUse = *chord.tonic;
+    } else {
+        return ""; // No tonic available
+    }
+    
+    if (chord.empty) {
         return "";
     }
     

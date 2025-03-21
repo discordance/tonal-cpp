@@ -34,7 +34,8 @@ TEST_CASE("getChord") {
         CHECK(chord.empty == false);
         CHECK(chord.name == "G major seventh");
         CHECK(chord.symbol == "Gmaj7");
-        CHECK(chord.tonic == "G");
+        CHECK(chord.tonic.has_value() == true);
+        CHECK(*chord.tonic == "G");
         CHECK(chord.root == "G");
         CHECK(chord.bass == "");
         CHECK(chord.rootDegree.value() == 1);
@@ -68,7 +69,8 @@ TEST_CASE("getChord") {
         CHECK(chord.empty == false);
         CHECK(chord.name == "G major seventh over B");
         CHECK(chord.symbol == "Gmaj7/B");
-        CHECK(chord.tonic == "G");
+        CHECK(chord.tonic.has_value() == true);
+        CHECK(*chord.tonic == "G");
         CHECK(chord.root == "B");
         CHECK(chord.bass == "B");
         CHECK(chord.rootDegree.value() == 2);
@@ -104,7 +106,7 @@ TEST_CASE("getChord") {
         Chord chord = getChord("dim");
         CHECK(chord.symbol == "dim");
         CHECK(chord.name == "diminished");
-        CHECK(chord.tonic == "");
+        CHECK(chord.tonic.has_value() == false);
         CHECK(chord.root == "");
         CHECK(chord.bass == "");
         CHECK(!chord.rootDegree.has_value()); // nullopt means not found
@@ -121,7 +123,8 @@ TEST_CASE("get/chord") {
     CHECK(cmaj7.empty == false);
     CHECK(cmaj7.symbol == "Cmaj7");
     CHECK(cmaj7.name == "C major seventh");
-    CHECK(cmaj7.tonic == "C");
+    CHECK(cmaj7.tonic.has_value() == true);
+    CHECK(*cmaj7.tonic == "C");
     CHECK(cmaj7.root == "");
     CHECK(cmaj7.bass == "");
     CHECK(!cmaj7.rootDegree.has_value()); // nullopt means not found
