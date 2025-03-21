@@ -30,8 +30,7 @@ This is a C++ port of the [tonal.js](https://github.com/tonaljs/tonal) music the
 - **range**: Note range operations
 - **rhythm-pattern**: Rhythm pattern operations
 - **roman-numeral**: Roman numeral parsing
-- **scale**: Scale operations
-- **scale-type**: Scale type dictionary
+
 - **scale-dictionary**: Dictionary of scales
 - **time-signature**: Time signature parsing
 - **voice-leading**: Voice leading operations

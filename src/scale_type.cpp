@@ -157,7 +157,6 @@ ScaleType get(const ScaleTypeName& type) {
     ensureInitialized();
     auto it = index.find(type);
     if (it != index.end()) {
-
         return *(it->second);
     }
     return NoScaleType;

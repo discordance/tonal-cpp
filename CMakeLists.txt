@@ -39,6 +39,7 @@ set(LIB_SOURCES
     src/note.cpp
     src/helpers.cpp
     src/scale_type.cpp
+    src/scale.cpp
 )
 
 # Create static library
@@ -71,6 +72,7 @@ if(TONAL_BUILD_TESTS)
     test/test_midi.cpp
     test/test_note.cpp
     test/test_scale_type.cpp
+    test/test_scale.cpp
   )
   
   add_executable(test_tonalcpp ${TEST_SOURCES})
