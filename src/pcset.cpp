@@ -335,46 +335,46 @@ bool isEqual(const Pcset& s1, const Pcset& s2) {
 }
 
 // IsSubsetOf implementation
-bool isSubsetOf(const std::string& superset, const std::string& subset) {
-    int s = getPcset(superset).setNum;
+bool isSubsetOf(const std::string& set, const std::string& subset) {
+    int s = getPcset(set).setNum;
     int o = getPcset(subset).setNum;
     
     return s && s != o && (o & s) == o;
 }
 
-bool isSubsetOf(int superset, int subset) {
-    return isSubsetOf(getPcset(superset), getPcset(subset));
+bool isSubsetOf(int set, int subset) {
+    return isSubsetOf(getPcset(set), getPcset(subset));
 }
 
-bool isSubsetOf(const std::vector<std::string>& superset, const std::vector<std::string>& subset) {
-    return isSubsetOf(getPcset(superset), getPcset(subset));
+bool isSubsetOf(const std::vector<std::string>& set, const std::vector<std::string>& subset) {
+    return isSubsetOf(getPcset(set), getPcset(subset));
 }
 
-bool isSubsetOf(const Pcset& superset, const Pcset& subset) {
-    int s = superset.setNum;
+bool isSubsetOf(const Pcset& set, const Pcset& subset) {
+    int s = set.setNum;
     int o = subset.setNum;
     
     return s && s != o && (o & s) == o;
 }
 
 // IsSupersetOf implementation
-bool isSupersetOf(const std::string& subset, const std::string& superset) {
-    int s = getPcset(subset).setNum;
+bool isSupersetOf(const std::string& set, const std::string& superset) {
+    int s = getPcset(set).setNum;
     int o = getPcset(superset).setNum;
     
     return s && s != o && (o | s) == o;
 }
 
-bool isSupersetOf(int subset, int superset) {
-    return isSupersetOf(getPcset(subset), getPcset(superset));
+bool isSupersetOf(int set, int superset) {
+    return isSupersetOf(getPcset(set), getPcset(superset));
 }
 
-bool isSupersetOf(const std::vector<std::string>& subset, const std::vector<std::string>& superset) {
-    return isSupersetOf(getPcset(subset), getPcset(superset));
+bool isSupersetOf(const std::vector<std::string>& set, const std::vector<std::string>& superset) {
+    return isSupersetOf(getPcset(set), getPcset(superset));
 }
 
-bool isSupersetOf(const Pcset& subset, const Pcset& superset) {
-    int s = subset.setNum;
+bool isSupersetOf(const Pcset& set, const Pcset& superset) {
+    int s = set.setNum;
     int o = superset.setNum;
     
     return s && s != o && (o | s) == o;

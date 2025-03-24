@@ -202,6 +202,23 @@ TEST_CASE("existence") {
     CHECK(get("mixolydian").empty == true);
 }
 
+TEST_CASE("chordScales") {
+    std::vector<std::string> scales = chordScales("C7b9");
+    CHECK(!scales.empty());
+    
+    // Check for some expected scales
+    std::vector<std::string> expectedScales = {
+        "phrygian dominant", "flamenco", "spanish heptatonic", 
+        "half-whole diminished", "chromatic"
+    };
+    
+    // Check if all expected scales are in the result
+    for (const auto& scale : expectedScales) {
+
+        CHECK(std::find(scales.begin(), scales.end(), scale) != scales.end());
+    }
+}
+
 TEST_CASE("transpose") {
     CHECK(transpose("Eb7b9", "5P") == "Bb7b9");
     CHECK(transpose("7b9", "5P") == "7b9");
@@ -215,19 +232,17 @@ TEST_CASE("extended") {
 }
 
 TEST_CASE("reduced") {
-    // Similar to extended, just check we get results
+    // The TypeScript test expects exactly ["C5", "CM"]
     std::vector<std::string> reduced_chords = reduced("CMaj7");
-    CHECK(!reduced_chords.empty());
     
-    // Check if the reduced set includes some expected values
-    bool contains_cm = false;
-    bool contains_c5 = false;
-    for (const auto& chord : reduced_chords) {
-        if (chord == "CM") contains_cm = true;
-        if (chord == "C5") contains_c5 = true;
-    }
-    CHECK(contains_cm);
-    CHECK(contains_c5);
+    // Check we have exactly 2 items
+    CHECK(reduced_chords.size() == 2);
+    
+    // The order matters, so sort the results to match TypeScript's test
+    std::sort(reduced_chords.begin(), reduced_chords.end());
+    
+    // Check for exact match with expected values
+    CHECK(reduced_chords == std::vector<std::string>({"C5", "CM"}));
 }
 
 TEST_CASE("degreeToNote") {

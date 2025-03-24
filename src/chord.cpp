@@ -2,7 +2,7 @@
 #include "tonalcpp/chord_detect.h"
 #include "tonalcpp/pcset.h"
 #include "tonalcpp/pitch_distance.h"
-// #include "tonalcpp/pitch_interval.h"
+#include "tonalcpp/scale_type.h"
 #include "tonalcpp/interval.h"
 #include <algorithm>
 #include <cmath>
@@ -239,12 +239,27 @@ std::string transpose(const std::string& chordName, const std::string& interval)
 
 std::vector<std::string> chordScales(const std::string& name) {
     Chord s = get(name);
+
+    if (s.empty) {
+        return {};
+    }
     
-    // We need the scale_type module which hasn't been ported yet
-    // This would use isSupersetOf to check if the chord fits in each scale
-    // For now we return an empty vector since the scale_type module 
-    // isn't available in C++ yet
-    return {};
+    // Create a function to check if a chord is included in a scale
+    auto isChordIncluded = [&s](const std::string& scaleChroma) {
+        return pcset::isSupersetOf(s.chroma, scaleChroma);
+    };
+    
+    // Get all scale types and filter for those that include the chord
+    std::vector<std::string> result;
+    auto allScaleTypes = scale_type::all();
+    
+    for (const auto& scale : allScaleTypes) {
+        if (isChordIncluded(scale.chroma)) {
+            result.push_back(scale.name);
+        }
+    }
+    
+    return result;
 }
 
 std::vector<std::string> extended(const std::string& chordName) {
@@ -256,7 +271,7 @@ std::vector<std::string> extended(const std::string& chordName) {
     auto allChordTypes = chord_type::all();
     for (const auto& chordType : allChordTypes) {
         // Check if chordType is a superset of s
-        if (pcset::isSupersetOf(s.chroma, chordType.chroma) && s.tonic.has_value()) {
+        if (pcset::isSupersetOf(chordType.chroma, s.chroma) && s.tonic.has_value()) {
             result.push_back(*s.tonic + (!chordType.aliases.empty() ? chordType.aliases[0] : ""));
         }
     }
