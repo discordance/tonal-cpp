@@ -47,37 +47,89 @@ std::vector<std::string> ChordAutocomplete::getSuggestions(const std::string& pr
     }
     
     // Otherwise, treat as a general chord search
+    std::unordered_set<std::string> resultSet; // Use a set to avoid duplicates
     std::vector<std::string> unsortedResults;
     
-    // Check for matches in complete chord names
+    // Check for matches in complete chord names - exact match for notes to avoid C# when searching for C
     for (const auto& note : allTonicNotes) {
-        if (unsortedResults.size() >= limit * 2) break; // Collect more than we need for sorting
-        if (startsWith(note, prefix)) {
-            unsortedResults.push_back(note);
-            unsortedResults.push_back(note + "m");
-            unsortedResults.push_back(note + "7");
-            if (unsortedResults.size() >= limit * 2) break;
+        if (resultSet.size() >= limit * 2) break; // Collect more than we need for sorting
+        
+        // For note prefixes, we want exact matches to avoid C# when searching for C
+        bool noteMatches = false;
+        
+        // Single character prefixes (like "C")
+        if (prefix.length() == 1) {
+            noteMatches = (note == prefix);
+        } 
+        // Two character prefixes that could be complete notes (like "C#" or "Db")
+        else if (prefix.length() == 2 && (prefix[1] == '#' || prefix[1] == 'b')) {
+            noteMatches = (note == prefix);
+        }
+        // Other prefixes - use regular prefix matching
+        else if (startsWith(note, prefix)) {
+            noteMatches = true;
+        }
+        
+        if (noteMatches) {
+            if (resultSet.insert(note).second) unsortedResults.push_back(note);
+            if (resultSet.insert(note + "m").second) unsortedResults.push_back(note + "m");
+            if (resultSet.insert(note + "7").second) unsortedResults.push_back(note + "7");
+            if (resultSet.size() >= limit * 2) break;
         }
     }
     
     // Check for matches with a chord type (e.g., "Cmaj")
     for (const auto& note : allTonicNotes) {
-        for (const auto& symbol : chordSymbols) {
-            if (unsortedResults.size() >= limit * 2) break;
-            
-            std::string fullChord = note + symbol;
-            if (startsWith(fullChord, prefix)) {
-                unsortedResults.push_back(fullChord);
+        bool noteMatches = false;
+        
+        // Single character prefixes (like "C") - exact match only
+        if (prefix.length() == 1) {
+            noteMatches = (note == prefix);
+        } 
+        // Two character prefixes that could be complete notes (like "C#" or "Db") - exact match only
+        else if (prefix.length() == 2 && (prefix[1] == '#' || prefix[1] == 'b')) {
+            noteMatches = (note == prefix);
+        }
+        // Other prefixes (like "Cmaj") - use startsWith for chord name matches
+        else {
+            // If the prefix starts with this note, it might be looking for a chord type
+            // Example: "Cm" should match C minor chords but not C# chords
+            if (prefix.length() >= note.length() && prefix.substr(0, note.length()) == note) {
+                noteMatches = true;
             }
         }
         
-        for (const auto& name : chordTypeNames) {
-            if (unsortedResults.size() >= limit * 2) break;
-            if (name.empty()) continue;
-            
-            std::string fullChord = note + " " + name;
-            if (startsWith(fullChord, prefix)) {
-                unsortedResults.push_back(fullChord);
+        if (noteMatches) {
+            // If prefix is exactly the note name or if we're looking for chord types
+            if (prefix == note || prefix.length() > note.length()) {
+                for (const auto& symbol : chordSymbols) {
+                    if (resultSet.size() >= limit * 2) break;
+                    
+                    std::string fullChord = note + symbol;
+                    // If prefix is just the note, add all symbols
+                    // If prefix is longer, check if the whole chord matches the prefix
+                    if ((prefix.length() <= note.length() && prefix == note) ||
+                        (prefix.length() > note.length() && startsWith(fullChord, prefix))) {
+                        if (resultSet.insert(fullChord).second) {
+                            unsortedResults.push_back(fullChord);
+                        }
+                    }
+                }
+                
+                for (const auto& name : chordTypeNames) {
+                    if (resultSet.size() >= limit * 2) break;
+                    if (name.empty()) continue;
+                    
+                    std::string fullChord = note + " " + name;
+                    // If prefix is just the note, add all names
+                    // If prefix is longer, check if the chord matches the prefix
+                    if ((prefix.length() <= note.length() && prefix == note) ||
+                        (prefix.length() > note.length() && startsWith(fullChord, prefix))) {
+                        if (resultSet.insert(fullChord).second) {
+                            unsortedResults.push_back(fullChord);
+                        }
+                    }
+                }
             }
         }
     }
@@ -117,6 +169,7 @@ std::vector<std::string> ChordAutocomplete::getSuggestionsForTonic(
     const std::string& tonic, const std::string& typePrefix, int limit) {
     
     std::vector<std::string> unsortedResults;
+    std::unordered_set<std::string> resultSet; // Use a set to avoid duplicates
     auto validNote = note::get(tonic);
     
     if (validNote.empty) {
@@ -128,20 +181,39 @@ std::vector<std::string> ChordAutocomplete::getSuggestionsForTonic(
     // If no type prefix, suggest common chord types for this tonic
     if (typePrefix.empty()) {
         // Add simple chords first (the sorting will ensure they stay at the top)
-        unsortedResults.push_back(validTonic);
-        unsortedResults.push_back(validTonic + "m");
-        unsortedResults.push_back(validTonic + "7");
-        unsortedResults.push_back(validTonic + "maj7");
-        unsortedResults.push_back(validTonic + "m7");
-        unsortedResults.push_back(validTonic + "6");
-        unsortedResults.push_back(validTonic + "9");
-        unsortedResults.push_back(validTonic + "sus4");
+        if (resultSet.insert(validTonic).second) unsortedResults.push_back(validTonic);
+        if (resultSet.insert(validTonic + "m").second) unsortedResults.push_back(validTonic + "m");
+        if (resultSet.insert(validTonic + "7").second) unsortedResults.push_back(validTonic + "7");
+        if (resultSet.insert(validTonic + "maj7").second) unsortedResults.push_back(validTonic + "maj7");
+        if (resultSet.insert(validTonic + "m7").second) unsortedResults.push_back(validTonic + "m7");
+        if (resultSet.insert(validTonic + "6").second) unsortedResults.push_back(validTonic + "6");
+        if (resultSet.insert(validTonic + "9").second) unsortedResults.push_back(validTonic + "9");
+        if (resultSet.insert(validTonic + "sus4").second) unsortedResults.push_back(validTonic + "sus4");
         
         // Add more complex chords to have a variety of options
-        unsortedResults.push_back(validTonic + "dim");
-        unsortedResults.push_back(validTonic + "aug");
-        unsortedResults.push_back(validTonic + "13");
-        unsortedResults.push_back(validTonic + "m9");
+        if (resultSet.insert(validTonic + "dim").second) unsortedResults.push_back(validTonic + "dim");
+        if (resultSet.insert(validTonic + "aug").second) unsortedResults.push_back(validTonic + "aug");
+        if (resultSet.insert(validTonic + "13").second) unsortedResults.push_back(validTonic + "13");
+        if (resultSet.insert(validTonic + "m9").second) unsortedResults.push_back(validTonic + "m9");
+    } else if (typePrefix == "m" || typePrefix == "min") {
+        // Special case for minor chord search - prioritize minor variations
+        if (resultSet.insert(validTonic + "m").second) unsortedResults.push_back(validTonic + "m");
+        if (resultSet.insert(validTonic + "m7").second) unsortedResults.push_back(validTonic + "m7");
+        if (resultSet.insert(validTonic + "m9").second) unsortedResults.push_back(validTonic + "m9");
+        if (resultSet.insert(validTonic + "m11").second) unsortedResults.push_back(validTonic + "m11");
+        if (resultSet.insert(validTonic + "m13").second) unsortedResults.push_back(validTonic + "m13");
+        if (resultSet.insert(validTonic + "m6").second) unsortedResults.push_back(validTonic + "m6");
+        if (resultSet.insert(validTonic + "m6/9").second) unsortedResults.push_back(validTonic + "m6/9");
+        if (resultSet.insert(validTonic + "dim").second) unsortedResults.push_back(validTonic + "dim");
+    } else if (typePrefix == "M" || typePrefix == "maj") {
+        // Special case for major chord search - prioritize major variations
+        if (resultSet.insert(validTonic + "M").second) unsortedResults.push_back(validTonic + "M");
+        if (resultSet.insert(validTonic + "maj7").second) unsortedResults.push_back(validTonic + "maj7");
+        if (resultSet.insert(validTonic + "maj9").second) unsortedResults.push_back(validTonic + "maj9");
+        if (resultSet.insert(validTonic + "maj13").second) unsortedResults.push_back(validTonic + "maj13");
+        if (resultSet.insert(validTonic + "6").second) unsortedResults.push_back(validTonic + "6");
+        if (resultSet.insert(validTonic + "6/9").second) unsortedResults.push_back(validTonic + "6/9");
+        if (resultSet.insert(validTonic + "aug").second) unsortedResults.push_back(validTonic + "aug");
         
         // Sort by complexity
         std::sort(unsortedResults.begin(), unsortedResults.end(), 
@@ -161,14 +233,20 @@ std::vector<std::string> ChordAutocomplete::getSuggestionsForTonic(
     // With type prefix, find matching chord types
     for (const auto& symbol : chordSymbols) {
         if (startsWith(symbol, typePrefix)) {
-            unsortedResults.push_back(validTonic + symbol);
+            std::string fullChord = validTonic + symbol;
+            if (resultSet.insert(fullChord).second) {
+                unsortedResults.push_back(fullChord);
+            }
         }
     }
     
     // Also check formal names
     for (const auto& name : chordTypeNames) {
         if (startsWith(name, typePrefix)) {
-            unsortedResults.push_back(validTonic + " " + name);
+            std::string fullChord = validTonic + " " + name;
+            if (resultSet.insert(fullChord).second) {
+                unsortedResults.push_back(fullChord);
+            }
         }
     }
     
@@ -192,14 +270,15 @@ bool ChordAutocomplete::startsWith(const std::string& str, const std::string& pr
         return false;
     }
     
-    // Case-sensitive check for 'M' for Major chords, but only when 'M' is a single character
-    // after the tonic (i.e., "CM" for C major, but not "CMa" or "CMaj")
+    // Case-sensitive check for 'M' for Major and 'm' for minor chords
+    // This is critical for distinguishing between "CM" (C major) and "Cm" (C minor)
     for (size_t i = 0; i < prefix.length(); i++) {
-        if (prefix[i] == 'M' && 
-            // Only enforce case sensitivity for standalone 'M' (not part of "Ma", "Maj", etc.)
+        // Handle 'M' and 'm' with exact case matching when they appear right after the tonic
+        if ((prefix[i] == 'M' || prefix[i] == 'm') && 
+            // Make sure it's not part of "Maj", "min", etc.
             (i == prefix.length() - 1 || !std::isalpha(prefix[i+1]))) {
-            // For standalone M, check exact case match
-            if (str[i] != 'M') {
+            // For standalone M or m, check exact case match
+            if (str[i] != prefix[i]) {
                 return false;
             }
         } else {
@@ -272,6 +351,25 @@ int ChordAutocomplete::getChordComplexity(const std::string& chordName) {
         return 100;
     }
     
+    // Check for simple chord patterns first
+    // Root notes, major and minor triads are the simplest
+    
+    // Just the root note (C)
+    if (chordName.length() == 1 || 
+        (chordName.length() == 2 && (chordName[1] == '#' || chordName[1] == 'b'))) {
+        return 1; // Root note or root with accidental
+    }
+    
+    // Check for minor triad (Cm) - ensure this is prioritized for 'm' search
+    if (chordName.length() == 2 && chordName[1] == 'm') {
+        return 2; // Minor triad
+    }
+    
+    // Check for major triad (CM)
+    if (chordName.length() == 2 && chordName[1] == 'M') {
+        return 2; // Major triad (same complexity level as minor, but will be sorted differently)
+    }
+    
     // Base complexity on number of notes in the chord
     int complexity = chordObj.notes.size();
     
@@ -290,12 +388,6 @@ int ChordAutocomplete::getChordComplexity(const std::string& chordName) {
     // Altered notes add complexity
     if (chordName.find("#") != std::string::npos || 
         chordName.find("b") != std::string::npos) complexity += 2;
-    
-    // Simple major and minor chords are the simplest
-    if (chordName.length() == 1) return 1; // Just the root note
-    if (chordName.length() == 2 && chordName[1] == 'm') return 2; // Minor chord
-    if (chordName.length() == 1 || 
-        (chordName.length() == 2 && (chordName[1] == '#' || chordName[1] == 'b'))) return 2; // Major chord
     
     return complexity;
 }
