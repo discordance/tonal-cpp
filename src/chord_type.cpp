@@ -30,47 +30,47 @@ const ChordType NoChordType = {
 // Format: {"intervals", "full name", "aliases"}
 static const std::vector<std::vector<std::string>> CHORDS = {
     // Major
-    {"1P 3M 5P", "major", "M ^  maj"},
-    {"1P 3M 5P 7M", "major seventh", "maj7 Δ ma7 M7 Maj7 ^7"},
-    {"1P 3M 5P 7M 9M", "major ninth", "maj9 Δ9 ^9"},
-    {"1P 3M 5P 7M 9M 13M", "major thirteenth", "maj13 Maj13 ^13"},
-    {"1P 3M 5P 6M", "sixth", "6 add6 add13 M6"},
-    {"1P 3M 5P 6M 9M", "sixth added ninth", "6add9 6/9 69 M69"},
-    {"1P 3M 6m 7M", "major seventh flat sixth", "M7b6 ^7b6"},
-    {"1P 3M 5P 7M 11A", "major seventh sharp eleventh", "maj#4 Δ#4 Δ#11 M7#11 ^7#11 maj7#11"},
-    
+    {"1P 3M 5P", "major", "M ^  maj", "bright, stable, uplifting"},
+    {"1P 3M 5P 7M", "major seventh", "maj7 Δ ma7 M7 Maj7 ^7", "warm, dreamy, sophisticated"},
+    {"1P 3M 5P 7M 9M", "major ninth", "maj9 Δ9 ^9", "lush, expansive, jazzy"},
+    {"1P 3M 5P 7M 9M 13M", "major thirteenth", "maj13 Maj13 ^13", "rich, vibrant, colorful"},
+    {"1P 3M 5P 6M", "sixth", "6 add6 add13 M6", "nostalgic, playful, vintage"},
+    {"1P 3M 5P 6M 9M", "sixth added ninth", "6add9 6/9 69 M69", "smooth, mellow, jazzy"},
+    {"1P 3M 6m 7M", "major seventh flat sixth", "M7b6 ^7b6", "bittersweet, mysterious, enigmatic"},
+    {"1P 3M 5P 7M 11A", "major seventh sharp eleventh", "maj#4 Δ#4 Δ#11 M7#11 ^7#11 maj7#11", "airy, ethereal, modern-jazz sound"},
+
     // Minor
-    {"1P 3m 5P", "minor", "m min -"},
-    {"1P 3m 5P 7m", "minor seventh", "m7 min7 mi7 -7"},
-    {"1P 3m 5P 7M", "minor/major seventh", "m/ma7 m/maj7 mM7 mMaj7 m/M7 -Δ7 mΔ -^7 -maj7"},
-    {"1P 3m 5P 6M", "minor sixth", "m6 -6"},
-    {"1P 3m 5P 7m 9M", "minor ninth", "m9 -9"},
-    {"1P 3m 5P 7M 9M", "minor/major ninth", "mM9 mMaj9 -^9"},
-    {"1P 3m 5P 7m 9M 11P", "minor eleventh", "m11 -11"},
-    {"1P 3m 5P 7m 9M 13M", "minor thirteenth", "m13 -13"},
-    
+    {"1P 3m 5P", "minor", "m min -", "melancholy, introspective, somber"},
+    {"1P 3m 5P 7m", "minor seventh", "m7 min7 mi7 -7", "mellow, reflective, jazzy"},
+    {"1P 3m 5P 7M", "minor/major seventh", "m/ma7 m/maj7 mM7 mMaj7 m/M7 -Δ7 mΔ -^7 -maj7", "dark, haunting, enigmatic"},
+    {"1P 3m 5P 6M", "minor sixth", "m6 -6", "moody, introspective, jazz-flavored"},
+    {"1P 3m 5P 7m 9M", "minor ninth", "m9 -9", "moody, lush, smooth jazz"},
+    {"1P 3m 5P 7M 9M", "minor/major ninth", "mM9 mMaj9 -^9", "mysterious, complex, emotionally ambiguous"},
+    {"1P 3m 5P 7m 9M 11P", "minor eleventh", "m11 -11", "introspective, deep, sophisticated jazz"},
+    {"1P 3m 5P 7m 9M 13M", "minor thirteenth", "m13 -13", "rich, lush, introspective jazz"},
+
     // Diminished
-    {"1P 3m 5d", "diminished", "dim ° o"},
-    {"1P 3m 5d 7d", "diminished seventh", "dim7 °7 o7"},
-    {"1P 3m 5d 7m", "half-diminished", "m7b5 ø -7b5 h7 h"},
-    
+    {"1P 3m 5d", "diminished", "dim ° o", "tense, unstable, eerie"},
+    {"1P 3m 5d 7d", "diminished seventh", "dim7 °7 o7", "dramatic, anxious, suspenseful"},
+    {"1P 3m 5d 7m", "half-diminished", "m7b5 ø -7b5 h7 h", "reflective, unsettled, melancholic jazz"},
+
     // Dominant/Seventh
-    {"1P 3M 5P 7m", "dominant seventh", "7 dom"},
-    {"1P 3M 5P 7m 9M", "dominant ninth", "9"},
-    {"1P 3M 5P 7m 9M 13M", "dominant thirteenth", "13"},
-    {"1P 3M 5P 7m 11A", "lydian dominant seventh", "7#11 7#4"},
-    
+    {"1P 3M 5P 7m", "dominant seventh", "7 dom", "bluesy, energetic, tension-seeking"},
+    {"1P 3M 5P 7m 9M", "dominant ninth", "9", "soulful, funky, energetic jazz"},
+    {"1P 3M 5P 7m 9M 13M", "dominant thirteenth", "13", "vibrant, jazzy, energetic"},
+    {"1P 3M 5P 7m 11A", "lydian dominant seventh", "7#11 7#4", "bright, colorful, sophisticated jazz fusion"},
+
     // Altered
-    {"1P 3M 5P 7m 9m", "dominant flat ninth", "7b9"},
-    {"1P 3M 5P 7m 9A", "dominant sharp ninth", "7#9"},
-    {"1P 3M 7m 9m", "altered", "alt7"},
-    
+    {"1P 3M 5P 7m 9m", "dominant flat ninth", "7b9", "tense, exotic, dramatic"},
+    {"1P 3M 5P 7m 9A", "dominant sharp ninth", "7#9", "gritty, bluesy, intense"},
+    {"1P 3M 7m 9m", "altered", "alt7", "dissonant, sophisticated, intense jazz tension"},
+
     // Suspended
-    {"1P 4P 5P", "suspended fourth", "sus4 sus"},
-    {"1P 2M 5P", "suspended second", "sus2"},
-    {"1P 4P 5P 7m", "suspended fourth seventh", "7sus4 7sus"},
-    {"1P 5P 7m 9M 11P", "eleventh", "11"},
-    {"1P 4P 5P 7m 9m", "suspended fourth flat ninth", "b9sus phryg 7b9sus 7b9sus4"},
+    {"1P 4P 5P", "suspended fourth", "sus4 sus", "open, ambiguous, spacious"},
+    {"1P 2M 5P", "suspended second", "sus2", "dreamy, open, reflective"},
+    {"1P 4P 5P 7m", "suspended fourth seventh", "7sus4 7sus", "unresolved, spacious, modern jazz feel"},
+    {"1P 5P 7m 9M 11P", "eleventh", "11", "expansive, modern jazz, rich harmonic tension"},
+    {"1P 4P 5P 7m 9m", "suspended fourth flat ninth", "b9sus phryg 7b9sus 7b9sus4", "dark, exotic, flamenco-inspired tension"},
     
     // Other
     {"1P 5P", "fifth", "5"},
