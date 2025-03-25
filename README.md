@@ -58,6 +58,50 @@ Cpp/
 - C++17 compatible compiler
 - CMake 3.14 or higher
 
+## Using in Your Project
+
+### Using with add_subdirectory
+
+To use TonalCpp in your project, you can include it as a subdirectory:
+
+1. Add the TonalCpp library to your project (as a git submodule or copy)
+
+2. In your CMakeLists.txt:
+
+```cmake
+# Add the TonalCpp library
+add_subdirectory(path/to/tonal/cpp)
+
+# Link against the library
+add_executable(your_app main.cpp)
+target_link_libraries(your_app PRIVATE tonalcpp::tonalcpp)
+```
+
+### Example Usage
+
+```cpp
+#include <iostream>
+#include <tonalcpp/note.h>
+#include <tonalcpp/chord.h>
+
+int main() {
+    // Get note properties
+    auto note = tonalcpp::note::get("C4");
+    std::cout << "Note name: " << note.name << std::endl;
+    std::cout << "MIDI: " << note.midi << std::endl;
+    
+    // Get notes in a chord
+    auto chord = tonalcpp::chord::get("Cmaj7");
+    std::cout << "Chord notes: ";
+    for (const auto& n : chord.notes) {
+        std::cout << n << " ";
+    }
+    std::cout << std::endl;
+    
+    return 0;
+}
+```
+
 ## Building
 
 ### Quick Start (testing)
@@ -68,3 +112,7 @@ cmake -S . -B build
 cmake --build build
 ./build/test_tonalcpp
 ```
+
+### CMake Options
+
+- `TONAL_BUILD_TESTS` - Build the test suite (ON by default)

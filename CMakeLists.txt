@@ -9,8 +9,8 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 option(TONAL_BUILD_TESTS "Build test programs" ON)
 
 # Set default build type if not specified
-if(NOT CMAKE_BUILD_TYPE)
-  set(CMAKE_BUILD_TYPE "Release")
+if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
+  set(CMAKE_BUILD_TYPE "Release" CACHE STRING "Build type" FORCE)
 endif()
 
 # Add compile flags
@@ -19,9 +19,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "GNU|Clang")
 elseif(MSVC)
   add_compile_options(/W4)
 endif()
-
-# Library includes
-include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 # Define source files for the library
 set(LIB_SOURCES
@@ -44,8 +41,15 @@ set(LIB_SOURCES
 
 # Create static library
 add_library(tonalcpp STATIC ${LIB_SOURCES})
+add_library(tonalcpp::tonalcpp ALIAS tonalcpp)
 
-# Create directories for library structure
+# Set include directories properly for both local and parent project use
+target_include_directories(tonalcpp
+    PUBLIC
+        $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+)
+
+# Make directories if needed
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/include/tonalcpp)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/src)
 file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test)
@@ -53,8 +57,6 @@ file(MAKE_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/test)
 # Setup tests if enabled
 if(TONAL_BUILD_TESTS)
   enable_testing()
-  # Use the doctest framework
-  include_directories(${CMAKE_CURRENT_SOURCE_DIR}/doctest)
   
   # Test executable
   set(TEST_SOURCES
@@ -77,18 +79,15 @@ if(TONAL_BUILD_TESTS)
   
   add_executable(test_tonalcpp ${TEST_SOURCES})
   target_link_libraries(test_tonalcpp PRIVATE tonalcpp)
+  target_include_directories(test_tonalcpp PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/doctest)
   
   # Register test
   add_test(NAME tonalcpp_tests COMMAND test_tonalcpp)
 endif()
 
-# Install targets
-install(TARGETS tonalcpp
-        EXPORT tonalcpp-targets
-        LIBRARY DESTINATION lib
-        ARCHIVE DESTINATION lib
-        RUNTIME DESTINATION bin
-        INCLUDES DESTINATION include)
-
-install(DIRECTORY include/ DESTINATION include)
+# Export targets to make them available to parent projects
+if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+  # We're being included via add_subdirectory, export targets automatically
+  set_property(GLOBAL APPEND PROPERTY tonalcpp_TARGETS tonalcpp)
+endif()
 
