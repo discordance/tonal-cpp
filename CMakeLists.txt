@@ -37,6 +37,10 @@ set(LIB_SOURCES
     src/helpers.cpp
     src/scale_type.cpp
     src/scale.cpp
+    src/range.cpp
+    src/voice_leading.cpp
+    src/voicing_dictionary.cpp
+    src/voicing.cpp
 )
 
 # Create static library
@@ -75,6 +79,10 @@ if(TONAL_BUILD_TESTS)
     test/test_note.cpp
     test/test_scale_type.cpp
     test/test_scale.cpp
+    test/test_range.cpp
+    test/test_voice_leading.cpp
+    test/test_voicing_dictionary.cpp
+    test/test_voicing.cpp
   )
   
   add_executable(test_tonalcpp ${TEST_SOURCES})
