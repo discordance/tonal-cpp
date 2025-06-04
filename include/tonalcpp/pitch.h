@@ -5,6 +5,8 @@
 #include <string>
 #include <vector>
 #include <cstdint>
+#include <typeinfo>
+#include <exception>
 
 namespace tonalcpp {
 namespace pitch {
@@ -68,8 +70,6 @@ struct NotFound : public NamedPitch {
 /**
  * Type checking utilities - only the void* versions are used by tests
  */
-#include <string>
-#include <typeinfo>
 
 // Special void* test versions for compatibility
 bool isNamedPitch(const void* src);
