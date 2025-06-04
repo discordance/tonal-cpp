@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <string>
 #include <limits>
+#include <iterator>
 
 namespace tonalcpp {
 namespace midi {
