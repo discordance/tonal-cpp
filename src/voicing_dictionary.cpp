@@ -76,6 +76,15 @@ std::optional<std::vector<std::string>> lookup(
         }
     }
     
+    // Special case: empty string should resolve to major chord
+    // This matches TypeScript behavior where Chord.get("C" + "") returns C major
+    if (symbol.empty()) {
+        auto majorIt = dictionary.find("M");
+        if (majorIt != dictionary.end()) {
+            return majorIt->second;
+        }
+    }
+    
     return std::nullopt;
 }
 

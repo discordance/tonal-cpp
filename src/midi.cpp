@@ -19,15 +19,21 @@ bool isMidi(const Midi& arg) {
 }
 
 std::optional<int> toMidi(const std::string& note) {
-    // Try to convert to integer first
-    try {
-        int midiNum = std::stoi(note);
-        return toMidi(midiNum);
-    } catch (const std::exception&) {
-        // If not a number, parse as note name
-        const pitch_note::Note n = pitch_note::note(note);
-        return n.midi;
+    // First check if it's a valid number string (safer than stoi)
+    // This mimics TypeScript's +note behavior more closely
+    if (!note.empty()) {
+        char* endPtr;
+        long val = std::strtol(note.c_str(), &endPtr, 10);
+        
+        // If entire string was consumed and it's a valid MIDI range
+        if (*endPtr == '\0' && val >= 0 && val <= 127) {
+            return static_cast<int>(val);
+        }
     }
+    
+    // If not a valid number, parse as note name
+    const pitch_note::Note n = pitch_note::note(note);
+    return n.midi;
 }
 
 std::optional<int> toMidi(int note) {
